@@ -337,14 +337,10 @@ function calcGoalSport(prefix,threshold,label){
  var p123=additive([o1,ox,o2]),qAh=additive([h1,h2])[0],qTot=additive([ov,un])[0],max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5;
  var fit=fitPoissonPathTargets(qAh,qTot,h,t,max,limit),rA=seqBonus(fit.la,fit.lb,threshold,'A'),rB=seqBonus(fit.la,fit.lb,threshold,'B');
  var pModel=oneXTwo(fit.la,fit.lb,max);
- var cross=Math.max(Math.abs(pModel[0]-p123[0]),Math.abs(pModel[1]-p123[1]),Math.abs(pModel[2]-p123[2]));
  var status=fit.patherr>.015
    ?'<div class="bad">⚠ Handicap et total difficiles à reproduire ensemble (écart max '+(fit.patherr*100).toFixed(1)+' pt). Vérifie les lignes saisies.</div>'
-   :'<div class="good">✓ Handicap et total correctement reproduits par le modèle.</div>';
- var crossNote=cross>.025
-   ?'<div class="note">ℹ️ Le 1X2 s’écarte de '+(cross*100).toFixed(1)+' pt du Poisson simple. Ce n’est pas une erreur de saisie : la fair classique reste calculée directement depuis le 1X2, tandis que le bonus de garantie utilise le handicap + total.</div>'
    :'';
- var details='<div class="note">λ équipe 1 = '+fit.la.toFixed(2)+' · λ équipe 2 = '+fit.lb.toFixed(2)+' · bonus calibré sur handicap + total.</div>'+status+crossNote;
+ var details='<div class="note">λ équipe 1 = '+fit.la.toFixed(2)+' · λ équipe 2 = '+fit.lb.toFixed(2)+' · bonus calibré sur handicap + total.</div>'+status;
  var el=document.getElementById(prefix+'_res');el.innerHTML=resultTable(p123[0],p123[2],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
 function calibrateDiff(pWin,h,pCover){
@@ -456,19 +452,26 @@ function calcRugby(){
  var code=document.getElementById('r_code').value,p=additive([o1,ox,o2]),qAh=additive([s1,s2])[0],qTot=additive([ov,un])[0];
  var fit=fitRugbyPath(qAh,qTot,h,tot,140,code),rA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),rB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
  var sev=rugbySeverity(code),meanPts=sev.reduce(function(a,x){return a+x.pts*x.p},0);
- var cross=Math.max(Math.abs(fit.p[0]-p[0]),Math.abs(fit.p[1]-p[1]),Math.abs(fit.p[2]-p[2]));
  var status=fit.aherr>.015
    ?'<div class="bad">⚠ Handicap difficile à reproduire avec le total saisi (écart '+(fit.aherr*100).toFixed(1)+' pt). Vérifie les lignes.</div>'
-   :'<div class="good">✓ Handicap et total correctement reproduits par le modèle.</div>';
- var crossNote=cross>.03
-   ?'<div class="note">ℹ️ Le 1X2 s’écarte de '+(cross*100).toFixed(1)+' pt du modèle de scoring générique. La fair classique reste calculée directement depuis le 1X2 ; le bonus +15 utilise handicap + total.</div>'
    :'';
  var detailCode=code==="XIII"
   ?'RUGBY À XIII : événements de score modélisés en 1 / 2 / 4 / 6 points.'
   :'RUGBY À XV : événements de score modélisés en 3 / 5 / 7 points.';
- var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Le bonus +15 est calibré sur handicap + total.</div>'+status+crossNote+
+ var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Le bonus +15 est calibré sur handicap + total.</div>'+status+
  '<div class="warn">⚠ Le profil d’événements est générique à chaque code de rugby ; la précision peut varier selon compétition et style de jeu.</div>';
  var el=document.getElementById('r_res');el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
 }
+
+document.addEventListener('keydown',function(e){
+ if(e.key!=='Enter' || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+ if(e.target && e.target.tagName==='SELECT') return;
+ var panel=document.querySelector('.panel.active');
+ if(!panel) return;
+ var button=panel.querySelector('button.calc');
+ if(!button) return;
+ e.preventDefault();
+ button.click();
+});
 </script>
 </body></html>
