@@ -365,24 +365,84 @@ function calcBridgeSport(prefix,threshold,label,F){
  var details='<div class="note">'+label+' : marge finale implicite équipe 1 = '+cal.mu.toFixed(2)+' pts · σ finale = '+cal.sigma.toFixed(2)+' · volatilité de trajectoire η = '+eta.toFixed(2)+' (dépend du total '+tot.toFixed(1)+'). '+calText+'</div>'+centralityWarn(ov,un)+sigmaWarn;
  el.innerHTML=resultTable(p[0],p[1],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
+function rugbySeverity(){return [{pts:3,p:.31},{pts:5,p:.15},{pts:7,p:.54}]}
+function rugbyScorePMF(lambda,max){
+ var sev=rugbySeverity(),p=new Array(max+1).fill(0);p[0]=Math.exp(-lambda);
+ for(var k=1;k<=max;k++){
+  var z=0;
+  for(var j=0;j<sev.length;j++){var d=sev[j].pts;if(d<=k)z+=d*sev[j].p*p[k-d]}
+  p[k]=lambda*z/k;
+ }
+ return p
+}
+function rugbyTotalProb(lambda,line,max){
+ var p=rugbyScorePMF(lambda,max),subs=splitQuarter(line),ws=0,ls=0;
+ for(var s=0;s<subs.length;s++){var h=subs[s],w=0,l=0;for(var i=0;i<=max;i++){var z=i-h;if(z>1e-9)w+=p[i];else if(z<-1e-9)l+=p[i]}ws+=w;ls+=l}
+ return ws/(ws+ls)
+}
+function solveRugbyTotal(line,q,max){
+ var lo=.05,hi=30;
+ for(var i=0;i<70;i++){var m=(lo+hi)/2;if(rugbyTotalProb(m,line,max)<q)lo=m;else hi=m}
+ return (lo+hi)/2
+}
+function rugbyMarketProbs(la,lb,h,max){
+ var a=rugbyScorePMF(la,max),b=rugbyScorePMF(lb,max),subs=splitQuarter(h),p1=0,pd=0,p2=0,aw=0,al=0;
+ for(var i=0;i<=max;i++)for(var j=0;j<=max;j++){
+  var pr=a[i]*b[j];if(i>j)p1+=pr;else if(i<j)p2+=pr;else pd+=pr;
+  for(var u=0;u<subs.length;u++){var z=i-j+subs[u];if(z>1e-9)aw+=pr;else if(z<-1e-9)al+=pr}
+ }
+ var zsum=p1+pd+p2;return {p:[p1/zsum,pd/zsum,p2/zsum],ah:aw/(aw+al)}
+}
+function fitRugbyMarkets(p123,qAh,qTot,h,t,max){
+ var totalLambda=solveRugbyTotal(t,qTot,max),best=null;
+ for(var share=.05;share<=.95;share+=.005){
+  var la=totalLambda*share,lb=totalLambda-la,z=rugbyMarketProbs(la,lb,h,max);
+  var loss=1.5*((z.p[0]-p123[0])**2+(z.p[1]-p123[1])**2+(z.p[2]-p123[2])**2)+3*(z.ah-qAh)**2;
+  var maxerr=Math.max(Math.abs(z.p[0]-p123[0]),Math.abs(z.p[1]-p123[1]),Math.abs(z.p[2]-p123[2]),Math.abs(z.ah-qAh));
+  if(!best||loss<best.loss)best={la:la,lb:lb,p:z.p,ah:z.ah,loss:loss,maxerr:maxerr,totalLambda:totalLambda}
+ }
+ var center=best.la/totalLambda,a=Math.max(.02,center-.012),b=Math.min(.98,center+.012);
+ for(var sh=a;sh<=b;sh+=.001){
+  var la2=totalLambda*sh,lb2=totalLambda-la2,z2=rugbyMarketProbs(la2,lb2,h,max);
+  var loss2=1.5*((z2.p[0]-p123[0])**2+(z2.p[1]-p123[1])**2+(z2.p[2]-p123[2])**2)+3*(z2.ah-qAh)**2;
+  var me=Math.max(Math.abs(z2.p[0]-p123[0]),Math.abs(z2.p[1]-p123[1]),Math.abs(z2.p[2]-p123[2]),Math.abs(z2.ah-qAh));
+  if(loss2<best.loss)best={la:la2,lb:lb2,p:z2.p,ah:z2.ah,loss:loss2,maxerr:me,totalLambda:totalLambda}
+ }
+ return best
+}
+function rugbySeqBonus(la,lb,threshold,side){
+ var L=la+lb,pa=la/L,pb=lb/L,sev=rugbySeverity(),states=new Map([["0|0",1]]),pN=Math.exp(-L),ans=0;
+ for(var n=0;n<=45;n++){
+  if(n>0){
+   var nx=new Map();
+   states.forEach(function(pr,key){
+    var sp=key.split("|"),d=+sp[0],hit=sp[1]==="1";
+    for(var j=0;j<sev.length;j++){
+     var step=sev[j].pts,sv=sev[j].p;
+     var d1=d+step,h1=hit||(side==="A"?d1>=threshold:d1<=-threshold),k1=d1+"|"+(h1?1:0);
+     nx.set(k1,(nx.get(k1)||0)+pr*pa*sv);
+     var d2=d-step,h2=hit||(side==="A"?d2>=threshold:d2<=-threshold),k2=d2+"|"+(h2?1:0);
+     nx.set(k2,(nx.get(k2)||0)+pr*pb*sv);
+    }
+   });
+   states=nx;pN=pN*L/n;
+  }
+  states.forEach(function(pr,key){var sp=key.split("|"),d=+sp[0],hit=sp[1]==="1",nonWin=side==="A"?d<=0:d>=0;if(hit&&nonWin)ans+=pN*pr})
+ }
+ return ans
+}
 function calcRugby(){
  var o1=v('r_o1'),ox=v('r_ox'),o2=v('r_o2'),h=v('r_h'),s1=v('r_s1'),s2=v('r_s2'),tot=v('r_t'),ov=v('r_over'),un=v('r_under');
  if([o1,ox,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis 1/X/2, handicap et total.');return}
- var p=additive([o1,ox,o2]),pd=p[1],pnd=1-pd,pCond=clamp(p[0]/pnd,.001,.999),pc=additive([s1,s2])[0];
- /* Approximation du handicap conditionnel hors nul. */
- var pcCond;
- if(h>0)pcCond=clamp((pc-pd)/pnd,.001,.999);
- else if(h<0)pcCond=clamp(pc/pnd,.001,.999);
- else pcCond=pc;
- var cal=calibrateDiff(pCond,h,pcCond),el=document.getElementById('r_res');
- if(!cal){el.innerHTML='<div class="bad">Calibration rugby impossible avec cette ligne. Utilise un handicap non nul proche de 50/50.</div>';el.classList.remove('hidden');return}
- /* Rugby XV: F=4.4 volontairement prudent. Moins validé que NBA/NFL. */
- var eta=Math.sqrt(4.4*tot),a=15,hitDraw=Math.exp(-2*a*a/(eta*eta));
- var rA=pnd*bridgeBonus(cal.mu,cal.sigma,eta,a)+pd*hitDraw;
- var rB=pnd*bridgeBonus(-cal.mu,cal.sigma,eta,a)+pd*hitDraw;
- var details='<div class="note">RUGBY XV : marge conditionnelle hors nul = '+cal.mu.toFixed(2)+' pts · σ finale = '+cal.sigma.toFixed(2)+' · volatilité de trajectoire η = '+eta.toFixed(2)+' (dépend du total '+tot.toFixed(1)+'). Le nul est réintégré comme issue non gagnante après un éventuel +15.</div>'+
- centralityWarn(ov,un)+'<div class="warn">⚠ Confiance plus faible que foot / NBA / NFL : il existe moins de données publiques propres à la fréquence des +15 repris au rugby. Le paramètre intra-match est donc volontairement conservateur.</div>';
- el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
+ var p=additive([o1,ox,o2]),qAh=additive([s1,s2])[0],qTot=additive([ov,un])[0],fit=fitRugbyMarkets(p,qAh,qTot,h,tot,120);
+ var rA=rugbySeqBonus(fit.la,fit.lb,15,'A'),rB=rugbySeqBonus(fit.la,fit.lb,15,'B');
+ var meanPts=.31*3+.15*5+.54*7;
+ var status=fit.maxerr>.035?'<div class="bad">⚠ Marchés trop incohérents avec le modèle rugby (écart max '+(fit.maxerr*100).toFixed(1)+' pt). Ne te fie pas à cette fair.</div>':
+            fit.maxerr>.02?'<div class="warn">⚠ Ajustement moyen : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>':
+            '<div class="good">✓ Ajustement marchés correct : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>';
+ var details='<div class="note">RUGBY XV : modèle de scores composé, avec événements de 3 / 5 / 7 points. Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Les intensités sont ajustées sur 1X2 + handicap + total, puis le calcul suit les chemins pouvant atteindre +15 avant de ne pas gagner.</div>'+status+
+ '<div class="warn">⚠ Le mix 3/5/7 est une approximation générique du rugby pro moderne ; la précision peut varier selon compétition et style de jeu.</div>';
+ var el=document.getElementById('r_res');el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
 }
 function tennisRate(tour,surface){
  var rates={
