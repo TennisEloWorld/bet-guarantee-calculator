@@ -297,7 +297,7 @@ function setHandicapSign(id,sign,btn){
 }
 function showTab(id,el){document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});document.getElementById(id).classList.add('active');el.classList.add('active')}
 function v(id){var raw=document.getElementById(id).value.trim().replace(',', '.');var x=parseFloat(raw);return Number.isFinite(x)?x:null}
-function additive(odds){var q=odds.map(function(x){return 1/x}),m=q.reduce(function(a,b){return a+b},0)-1;return q.map(function(x){return x-m/odds.length})}
+function devig(odds){var q=odds.map(function(x){return 1/x}),sum=q.reduce(function(a,b){return a+b},0);return q.map(function(x){return x/sum})}
 function fmt(x,n){if(n===undefined)n=3;return Number.isFinite(x)?x.toFixed(n):'—'}
 function pct(x,n){if(n===undefined)n=2;return Number.isFinite(x)?(x*100).toFixed(n)+'%':'—'}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
@@ -371,7 +371,7 @@ function resultTable(pA,pB,rA,rB,wA,wB,extra){
 function calcGoalSport(prefix,threshold,label){
  var o1=v(prefix+'_o1'),ox=v(prefix+'_ox'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),h1=v(prefix+'_h1'),h2=v(prefix+'_h2'),t=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
  if([o1,ox,o2,h,h1,h2,t,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||h1<=1||h2<=1||ov<=1||un<=1){alert('Remplis 1/X/2, handicap et total.');return}
- var p123=additive([o1,ox,o2]),qAh=additive([h1,h2])[0],qTot=additive([ov,un])[0],max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5;
+ var p123=devig([o1,ox,o2]),qAh=devig([h1,h2])[0],qTot=devig([ov,un])[0],max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5;
  var fit=fitPoissonPathTargets(qAh,qTot,h,t,max,limit),rA=seqBonus(fit.la,fit.lb,threshold,'A'),rB=seqBonus(fit.la,fit.lb,threshold,'B');
  var pModel=oneXTwo(fit.la,fit.lb,max);
  var status=fit.patherr>.015
@@ -397,13 +397,13 @@ function bridgeBonus(mu,sigma,eta,a){
  return Math.exp(expo)*Phi((-mu-tt*sigma*sigma)/sigma)
 }
 function centralityWarn(over,under){
- var q=additive([over,under])[0];
+ var q=devig([over,under])[0];
  return Math.abs(q-.5)>.07?'<div class="warn">⚠ La ligne de total saisie n’est pas très centrale ('+(q*100).toFixed(1)+'% côté Over). Prends si possible la ligne la plus proche de 50/50.</div>':''
 }
 function calcBridgeSport(prefix,threshold,label,F){
  var o1=v(prefix+'_o1'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),s1=v(prefix+'_s1'),s2=v(prefix+'_s2'),tot=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
  if([o1,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis moneyline, handicap et total.');return}
- var p=additive([o1,o2]),pc=additive([s1,s2])[0],cal=calibrateDiff(p[0],h,pc),el=document.getElementById(prefix+'_res');
+ var p=devig([o1,o2]),pc=devig([s1,s2])[0],cal=calibrateDiff(p[0],h,pc),el=document.getElementById(prefix+'_res');
  if(!cal){el.innerHTML='<div class="bad">Calibration impossible avec cette ligne. Utilise un handicap non nul proche de 50/50.</div>';el.classList.remove('hidden');return}
  var eta=Math.sqrt(F*tot),rA=bridgeBonus(cal.mu,cal.sigma,eta,threshold),rB=bridgeBonus(-cal.mu,cal.sigma,eta,threshold);
  var sigmaWarn=(cal.sigma<5||cal.sigma>25)?'<div class="warn">⚠ Volatilité finale implicite inhabituelle : σ '+cal.sigma.toFixed(1)+'. Vérifie les cotes et le signe du handicap.</div>':'';
@@ -486,7 +486,7 @@ function rugbySeqBonus(la,lb,threshold,side,code){
 function calcRugby(){
  var o1=v('r_o1'),ox=v('r_ox'),o2=v('r_o2'),h=v('r_h'),s1=v('r_s1'),s2=v('r_s2'),tot=v('r_t'),ov=v('r_over'),un=v('r_under');
  if([o1,ox,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis 1/X/2, handicap et total.');return}
- var code=document.getElementById('r_code').value,p=additive([o1,ox,o2]),qAh=additive([s1,s2])[0],qTot=additive([ov,un])[0];
+ var code=document.getElementById('r_code').value,p=devig([o1,ox,o2]),qAh=devig([s1,s2])[0],qTot=devig([ov,un])[0];
  var fit=fitRugbyPath(qAh,qTot,h,tot,140,code),rA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),rB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
  var sev=rugbySeverity(code),meanPts=sev.reduce(function(a,x){return a+x.pts*x.p},0);
  var status=fit.aherr>.015
