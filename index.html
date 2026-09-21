@@ -35,8 +35,7 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 <div class="card">
   <h1>Calculateur garanties — fair odds</h1>
   <div class="note">
-    Base : marchés Pinnacle dé-margés. La sortie principale est la <b>fair odds avec garantie</b>.
-    Les modèles de trajectoire sont adaptés au sport ; si les marchés sont incohérents, le calculateur le signale au lieu de forcer un résultat.
+    Base : marchés Pinnacle dé-margés. Les fair odds affichées sont <b>prudentes</b> : pour chaque sélection, le calculateur retient le cas le moins favorable parmi plusieurs méthodes standard de retrait de marge (Multiplicative, Power et Shin), puis retient l’estimation la plus basse du bonus de garantie.
   </div>
 </div>
 
@@ -297,7 +296,57 @@ function setHandicapSign(id,sign,btn){
 }
 function showTab(id,el){document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});document.getElementById(id).classList.add('active');el.classList.add('active')}
 function v(id){var raw=document.getElementById(id).value.trim().replace(',', '.');var x=parseFloat(raw);return Number.isFinite(x)?x:null}
-function devig(odds){var q=odds.map(function(x){return 1/x}),sum=q.reduce(function(a,b){return a+b},0);return q.map(function(x){return x/sum})}
+function devigMultiplicative(odds){
+ var q=odds.map(function(x){return 1/x}),sum=q.reduce(function(a,b){return a+b},0);
+ return q.map(function(x){return x/sum})
+}
+function devigPower(odds){
+ var q=odds.map(function(x){return 1/x}),sum=q.reduce(function(a,b){return a+b},0);
+ if(Math.abs(sum-1)<1e-12)return q.slice();
+ var lo,hi;
+ if(sum>1){
+  lo=1;hi=2;
+  while(q.reduce(function(a,x){return a+Math.pow(x,hi)},0)>1 && hi<64)hi*=2;
+ }else{
+  lo=.000001;hi=1;
+ }
+ for(var i=0;i<90;i++){
+  var mid=(lo+hi)/2,sm=q.reduce(function(a,x){return a+Math.pow(x,mid)},0);
+  if(sm>1)lo=mid;else hi=mid;
+ }
+ var k=(lo+hi)/2;
+ return q.map(function(x){return Math.pow(x,k)})
+}
+function devigShin(odds){
+ var q=odds.map(function(x){return 1/x}),sum=q.reduce(function(a,b){return a+b},0);
+ if(Math.abs(sum-1)<1e-12)return q.slice();
+ function probs(z){
+  return q.map(function(x){
+   return (Math.sqrt(z*z+4*(1-z)*x*x/sum)-z)/(2*(1-z))
+  })
+ }
+ var lo=0,hi=.999999;
+ for(var i=0;i<90;i++){
+  var mid=(lo+hi)/2,sm=probs(mid).reduce(function(a,b){return a+b},0);
+  if(sm>1)lo=mid;else hi=mid;
+ }
+ return probs((lo+hi)/2)
+}
+function devigCandidates(odds){
+ var all=[devigMultiplicative(odds),devigPower(odds),devigShin(odds)],out=[];
+ all.forEach(function(p){
+  if(!p.every(function(x){return Number.isFinite(x)&&x>0&&x<1}))return;
+  var duplicate=out.some(function(q){return q.every(function(x,i){return Math.abs(x-p[i])<1e-9})});
+  if(!duplicate)out.push(p)
+ });
+ return out
+}
+function devigConservative(odds){
+ var all=devigCandidates(odds),n=odds.length,out=[];
+ for(var i=0;i<n;i++)out[i]=Math.min.apply(null,all.map(function(p){return p[i]}));
+ return out
+}
+function devigReference(odds){return devigPower(odds)}
 function fmt(x,n){if(n===undefined)n=3;return Number.isFinite(x)?x.toFixed(n):'—'}
 function pct(x,n){if(n===undefined)n=2;return Number.isFinite(x)?(x*100).toFixed(n)+'%':'—'}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
@@ -363,22 +412,28 @@ function seqBonus(la,lb,threshold,side){
 function resultTable(pA,pB,rA,rB,wA,wB,extra){
  var ppA=clamp(pA+rA,1e-9,.999999),ppB=clamp(pB+rB,1e-9,.999999),evA=wA?wA*ppA-1:null,evB=wB?wB*ppB-1:null;
  return '<table><tr><th></th><th>Équipe 1</th><th>Équipe 2</th></tr>'+
- '<tr><td>Fair classique Pinnacle</td><td>'+fmt(1/pA)+'</td><td>'+fmt(1/pB)+'</td></tr>'+
- '<tr><td>Bonus garantie</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
- '<tr><td><b>FAIR GARANTIE</b></td><td class="big">'+fmt(1/ppA)+'</td><td class="big">'+fmt(1/ppB)+'</td></tr>'+
+ '<tr><td>Fair classique prudente</td><td>'+fmt(1/pA)+'</td><td>'+fmt(1/pB)+'</td></tr>'+
+ '<tr><td>Bonus garantie prudent</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
+ '<tr><td><b>FAIR GARANTIE PRUDENTE</b></td><td class="big">'+fmt(1/ppA)+'</td><td class="big">'+fmt(1/ppB)+'</td></tr>'+
  '<tr><td>EV à la cote saisie</td><td class="good">'+(evA===null?'—':pct(evA))+'</td><td class="good">'+(evB===null?'—':pct(evB))+'</td></tr></table>'+extra
 }
 function calcGoalSport(prefix,threshold,label){
  var o1=v(prefix+'_o1'),ox=v(prefix+'_ox'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),h1=v(prefix+'_h1'),h2=v(prefix+'_h2'),t=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
  if([o1,ox,o2,h,h1,h2,t,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||h1<=1||h2<=1||ov<=1||un<=1){alert('Remplis 1/X/2, handicap et total.');return}
- var p123=devig([o1,ox,o2]),qAh=devig([h1,h2])[0],qTot=devig([ov,un])[0],max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5;
- var fit=fitPoissonPathTargets(qAh,qTot,h,t,max,limit),rA=seqBonus(fit.la,fit.lb,threshold,'A'),rB=seqBonus(fit.la,fit.lb,threshold,'B');
- var pModel=oneXTwo(fit.la,fit.lb,max);
- var status=fit.patherr>.015
-   ?'<div class="bad">⚠ Handicap et total difficiles à reproduire ensemble (écart max '+(fit.patherr*100).toFixed(1)+' pt). Vérifie les lignes saisies.</div>'
+ var pBase=devigConservative([o1,ox,o2]),ahSet=devigCandidates([h1,h2]),totSet=devigCandidates([ov,un]),max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5;
+ var rA=Infinity,rB=Infinity,bestFit=null,bestErr=Infinity;
+ ahSet.forEach(function(aP){totSet.forEach(function(tP){
+  var fit=fitPoissonPathTargets(aP[0],tP[0],h,t,max,limit);
+  var xA=seqBonus(fit.la,fit.lb,threshold,'A'),xB=seqBonus(fit.la,fit.lb,threshold,'B');
+  if(xA<rA)rA=xA;if(xB<rB)rB=xB;
+  if(fit.patherr<bestErr){bestErr=fit.patherr;bestFit=fit}
+ })});
+ if(!Number.isFinite(rA)||!Number.isFinite(rB)){alert('Impossible de calculer la garantie avec ces lignes.');return}
+ var status=bestErr>.015
+   ?'<div class="bad">⚠ Handicap et total difficiles à reproduire ensemble (écart max '+(bestErr*100).toFixed(1)+' pt). Vérifie les lignes saisies.</div>'
    :'';
- var details='<div class="note">λ équipe 1 = '+fit.la.toFixed(2)+' · λ équipe 2 = '+fit.lb.toFixed(2)+' · bonus calibré sur handicap + total.</div>'+status;
- var el=document.getElementById(prefix+'_res');el.innerHTML=resultTable(p123[0],p123[2],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
+ var details='<div class="note">Bonus prudent : plus faible estimation obtenue selon les méthodes de retrait de marge testées.</div>'+status;
+ var el=document.getElementById(prefix+'_res');el.innerHTML=resultTable(pBase[0],pBase[2],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
 function calibrateDiff(pWin,h,pCover){
  var zw=invPhi(pWin),zc=invPhi(pCover),den=zc-zw;
@@ -397,21 +452,27 @@ function bridgeBonus(mu,sigma,eta,a){
  return Math.exp(expo)*Phi((-mu-tt*sigma*sigma)/sigma)
 }
 function centralityWarn(over,under){
- var q=devig([over,under])[0];
+ var q=devigReference([over,under])[0];
  return Math.abs(q-.5)>.07?'<div class="warn">⚠ La ligne de total saisie n’est pas très centrale ('+(q*100).toFixed(1)+'% côté Over). Prends si possible la ligne la plus proche de 50/50.</div>':''
 }
 function calcBridgeSport(prefix,threshold,label,F){
  var o1=v(prefix+'_o1'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),s1=v(prefix+'_s1'),s2=v(prefix+'_s2'),tot=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
  if([o1,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis moneyline, handicap et total.');return}
- var p=devig([o1,o2]),pc=devig([s1,s2])[0],cal=calibrateDiff(p[0],h,pc),el=document.getElementById(prefix+'_res');
- if(!cal){el.innerHTML='<div class="bad">Calibration impossible avec cette ligne. Utilise un handicap non nul proche de 50/50.</div>';el.classList.remove('hidden');return}
- var eta=Math.sqrt(F*tot),rA=bridgeBonus(cal.mu,cal.sigma,eta,threshold),rB=bridgeBonus(-cal.mu,cal.sigma,eta,threshold);
- var sigmaWarn=(cal.sigma<5||cal.sigma>25)?'<div class="warn">⚠ Volatilité finale implicite inhabituelle : σ '+cal.sigma.toFixed(1)+'. Vérifie les cotes et le signe du handicap.</div>':'';
- var calText=label==='BASKET'
-  ?'La volatilité intra-match liée au total est calibrée prudemment sur la fréquence historique des comebacks NBA depuis -20.'
-  :'La volatilité intra-match liée au total est calibrée prudemment sur la fréquence historique des leads NFL de +17 finalement perdus.';
- var details='<div class="note">'+label+' : marge finale implicite équipe 1 = '+cal.mu.toFixed(2)+' pts · σ finale = '+cal.sigma.toFixed(2)+' · volatilité de trajectoire η = '+eta.toFixed(2)+' (dépend du total '+tot.toFixed(1)+'). '+calText+'</div>'+centralityWarn(ov,un)+sigmaWarn;
- el.innerHTML=resultTable(p[0],p[1],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
+ var pBase=devigConservative([o1,o2]),mlSet=devigCandidates([o1,o2]),spSet=devigCandidates([s1,s2]),eta=Math.sqrt(F*tot),rA=Infinity,rB=Infinity,valid=0,sigmaVals=[];
+ mlSet.forEach(function(mp){spSet.forEach(function(sp){
+  var cal=calibrateDiff(mp[0],h,sp[0]);
+  if(!cal)return;
+  var xA=bridgeBonus(cal.mu,cal.sigma,eta,threshold),xB=bridgeBonus(-cal.mu,cal.sigma,eta,threshold);
+  if(Number.isFinite(xA)&&xA>=0){rA=Math.min(rA,xA);valid++}
+  if(Number.isFinite(xB)&&xB>=0)rB=Math.min(rB,xB);
+  sigmaVals.push(cal.sigma)
+ })});
+ var el=document.getElementById(prefix+'_res');
+ if(!valid||!Number.isFinite(rA)||!Number.isFinite(rB)){el.innerHTML='<div class="bad">Calibration impossible avec cette ligne. Utilise un handicap non nul proche de 50/50.</div>';el.classList.remove('hidden');return}
+ var badSigma=sigmaVals.some(function(x){return x<5||x>25});
+ var sigmaWarn=badSigma?'<div class="warn">⚠ Certaines hypothèses de retrait de marge donnent une volatilité implicite atypique. Prudence.</div>':'';
+ var details='<div class="note">Bonus prudent : plus faible estimation obtenue selon les méthodes de retrait de marge testées ; le total du match ajuste la volatilité intra-match.</div>'+centralityWarn(ov,un)+sigmaWarn;
+ el.innerHTML=resultTable(pBase[0],pBase[1],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
 function rugbySeverity(code){
  if(code==="XIII"){
@@ -486,20 +547,19 @@ function rugbySeqBonus(la,lb,threshold,side,code){
 function calcRugby(){
  var o1=v('r_o1'),ox=v('r_ox'),o2=v('r_o2'),h=v('r_h'),s1=v('r_s1'),s2=v('r_s2'),tot=v('r_t'),ov=v('r_over'),un=v('r_under');
  if([o1,ox,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis 1/X/2, handicap et total.');return}
- var code=document.getElementById('r_code').value,p=devig([o1,ox,o2]),qAh=devig([s1,s2])[0],qTot=devig([ov,un])[0];
- var fit=fitRugbyPath(qAh,qTot,h,tot,140,code),rA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),rB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
- var sev=rugbySeverity(code),meanPts=sev.reduce(function(a,x){return a+x.pts*x.p},0);
- var status=fit.aherr>.015
-   ?'<div class="bad">⚠ Handicap difficile à reproduire avec le total saisi (écart '+(fit.aherr*100).toFixed(1)+' pt). Vérifie les lignes.</div>'
+ var code=document.getElementById('r_code').value,pBase=devigConservative([o1,ox,o2]),ahSet=devigCandidates([s1,s2]),totSet=devigCandidates([ov,un]),rA=Infinity,rB=Infinity,bestErr=Infinity;
+ ahSet.forEach(function(aP){totSet.forEach(function(tP){
+  var fit=fitRugbyPath(aP[0],tP[0],h,tot,140,code),xA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),xB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
+  if(xA<rA)rA=xA;if(xB<rB)rB=xB;if(fit.aherr<bestErr)bestErr=fit.aherr
+ })});
+ var status=bestErr>.015
+   ?'<div class="bad">⚠ Handicap difficile à reproduire avec le total saisi (écart '+(bestErr*100).toFixed(1)+' pt). Vérifie les lignes.</div>'
    :'';
- var detailCode=code==="XIII"
-  ?'RUGBY À XIII : événements de score modélisés en 1 / 2 / 4 / 6 points.'
-  :'RUGBY À XV : événements de score modélisés en 3 / 5 / 7 points.';
- var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Le bonus +15 est calibré sur handicap + total.</div>'+status+
- '<div class="warn">⚠ Le profil d’événements est générique à chaque code de rugby ; la précision peut varier selon compétition et style de jeu.</div>';
- var el=document.getElementById('r_res');el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
+ var detailCode=code==="XIII"?'Rugby à XIII':'Rugby à XV';
+ var details='<div class="note">'+detailCode+' · bonus prudent : plus faible estimation obtenue selon les méthodes de retrait de marge testées.</div>'+status+
+ '<div class="warn">⚠ Le profil de scoring rugby reste plus dépendant de la compétition que les autres modèles.</div>';
+ var el=document.getElementById('r_res');el.innerHTML=resultTable(pBase[0],pBase[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
 }
-
 document.addEventListener('keydown',function(e){
  if(e.key!=='Enter' || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
  if(e.target && e.target.tagName==='SELECT') return;
