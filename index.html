@@ -412,9 +412,9 @@ function seqBonus(la,lb,threshold,side){
 function resultTable(pA,pB,rA,rB,wA,wB,extra){
  var ppA=clamp(pA+rA,1e-9,.999999),ppB=clamp(pB+rB,1e-9,.999999),evA=wA?wA*ppA-1:null,evB=wB?wB*ppB-1:null;
  return '<table><tr><th></th><th>Équipe 1</th><th>Équipe 2</th></tr>'+
- '<tr><td>Fair classique prudente</td><td>'+fmt(1/pA)+'</td><td>'+fmt(1/pB)+'</td></tr>'+
- '<tr><td>Bonus garantie prudent</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
- '<tr><td><b>FAIR GARANTIE PRUDENTE</b></td><td class="big">'+fmt(1/ppA)+'</td><td class="big">'+fmt(1/ppB)+'</td></tr>'+
+ '<tr><td>Fair classique</td><td>'+fmt(1/pA)+'</td><td>'+fmt(1/pB)+'</td></tr>'+
+ '<tr><td>Bonus garantie</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
+ '<tr><td><b>FAIR GARANTIE</b></td><td class="big">'+fmt(1/ppA)+'</td><td class="big">'+fmt(1/ppB)+'</td></tr>'+
  '<tr><td>EV à la cote saisie</td><td class="good">'+(evA===null?'—':pct(evA))+'</td><td class="good">'+(evB===null?'—':pct(evB))+'</td></tr></table>'+extra
 }
 function calcGoalSport(prefix,threshold,label){
@@ -432,7 +432,7 @@ function calcGoalSport(prefix,threshold,label){
  var status=bestErr>.015
    ?'<div class="bad">⚠ Handicap et total difficiles à reproduire ensemble (écart max '+(bestErr*100).toFixed(1)+' pt). Vérifie les lignes saisies.</div>'
    :'';
- var details='<div class="note">Bonus prudent : plus faible estimation obtenue selon les méthodes de retrait de marge testées.</div>'+status;
+ var details='<div class="note">Bonus garantie : plus faible estimation obtenue selon les méthodes de retrait de marge testées.</div>'+status;
  var el=document.getElementById(prefix+'_res');el.innerHTML=resultTable(pBase[0],pBase[2],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
 function calibrateDiff(pWin,h,pCover){
@@ -471,7 +471,7 @@ function calcBridgeSport(prefix,threshold,label,F){
  if(!valid||!Number.isFinite(rA)||!Number.isFinite(rB)){el.innerHTML='<div class="bad">Calibration impossible avec cette ligne. Utilise un handicap non nul proche de 50/50.</div>';el.classList.remove('hidden');return}
  var badSigma=sigmaVals.some(function(x){return x<5||x>25});
  var sigmaWarn=badSigma?'<div class="warn">⚠ Certaines hypothèses de retrait de marge donnent une volatilité implicite atypique. Prudence.</div>':'';
- var details='<div class="note">Bonus prudent : plus faible estimation obtenue selon les méthodes de retrait de marge testées ; le total du match ajuste la volatilité intra-match.</div>'+centralityWarn(ov,un)+sigmaWarn;
+ var details='<div class="note">Bonus garantie : plus faible estimation obtenue selon les méthodes de retrait de marge testées ; le total du match ajuste la volatilité intra-match.</div>'+centralityWarn(ov,un)+sigmaWarn;
  el.innerHTML=resultTable(pBase[0],pBase[1],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
 function rugbySeverity(code){
@@ -556,7 +556,7 @@ function calcRugby(){
    ?'<div class="bad">⚠ Handicap difficile à reproduire avec le total saisi (écart '+(bestErr*100).toFixed(1)+' pt). Vérifie les lignes.</div>'
    :'';
  var detailCode=code==="XIII"?'Rugby à XIII':'Rugby à XV';
- var details='<div class="note">'+detailCode+' · bonus prudent : plus faible estimation obtenue selon les méthodes de retrait de marge testées.</div>'+status+
+ var details='<div class="note">'+detailCode+' · bonus garantie : plus faible estimation obtenue selon les méthodes de retrait de marge testées.</div>'+status+
  '<div class="warn">⚠ Le profil de scoring rugby reste plus dépendant de la compétition que les autres modèles.</div>';
  var el=document.getElementById('r_res');el.innerHTML=resultTable(pBase[0],pBase[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
 }
