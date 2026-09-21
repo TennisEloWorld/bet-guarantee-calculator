@@ -18,6 +18,9 @@ h1{font-size:21px;margin:0 0 5px}h2{font-size:16px;margin:0 0 10px}
 .tab{padding:11px 3px;border:1px solid var(--bd);background:#fff;border-radius:9px;font-weight:750;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:13px}
 .tab.active{background:var(--g);color:#fff}.panel{display:none}.panel.active{display:block}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.signrow{display:grid;grid-template-columns:42px 42px 1fr;gap:6px}
+.signbtn{border:1px solid #b9bec2;background:#fff;border-radius:8px;font-size:22px;font-weight:800;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.signbtn.active{background:#e9f2ed;border-color:#7da58f;color:#245f43}
 label{display:block;font-size:12px;color:#555;margin:0 0 4px}
 input,select{width:100%;padding:11px;border:1px solid #b9bec2;border-radius:8px;font-size:17px;background:#fff}
 button.calc{width:100%;padding:14px;border:0;border-radius:9px;background:var(--g);color:#fff;font-size:17px;font-weight:850;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -60,7 +63,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     
     <div class="grid3">
-      <div><label>Ligne handicap</label><input id="f_h" inputmode="decimal" type="text" autocomplete="off"></div>
+      <div><label>Ligne handicap</label><div class="signrow">
+          <button type="button" class="signbtn" onclick="setHandicapSign('f_h',-1,this)">−</button>
+          <button type="button" class="signbtn" onclick="setHandicapSign('f_h',1,this)">+</button>
+          <input id="f_h" inputmode="decimal" type="text" autocomplete="off">
+        </div></div>
       <div><label>Cote équipe 1</label><input id="f_h1" inputmode="decimal" type="text" autocomplete="off"></div>
       <div><label>Cote équipe 2</label><input id="f_h2" inputmode="decimal" type="text" autocomplete="off"></div>
     </div>
@@ -100,7 +107,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <h2>Handicap Pinnacle</h2>
     <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     <div class="grid3">
-      <div><label>Ligne handicap</label><input id="h_h" inputmode="decimal" type="text" autocomplete="off"></div>
+      <div><label>Ligne handicap</label><div class="signrow">
+          <button type="button" class="signbtn" onclick="setHandicapSign('h_h',-1,this)">−</button>
+          <button type="button" class="signbtn" onclick="setHandicapSign('h_h',1,this)">+</button>
+          <input id="h_h" inputmode="decimal" type="text" autocomplete="off">
+        </div></div>
       <div><label>Cote équipe 1</label><input id="h_h1" inputmode="decimal" type="text" autocomplete="off"></div>
       <div><label>Cote équipe 2</label><input id="h_h2" inputmode="decimal" type="text" autocomplete="off"></div>
     </div>
@@ -140,7 +151,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     
     <div class="grid3">
-      <div><label>Ligne handicap</label><input id="b_h" inputmode="decimal" type="text" autocomplete="off"></div>
+      <div><label>Ligne handicap</label><div class="signrow">
+          <button type="button" class="signbtn" onclick="setHandicapSign('b_h',-1,this)">−</button>
+          <button type="button" class="signbtn" onclick="setHandicapSign('b_h',1,this)">+</button>
+          <input id="b_h" inputmode="decimal" type="text" autocomplete="off">
+        </div></div>
       <div><label>Cote équipe 1</label><input id="b_s1" inputmode="decimal" type="text" autocomplete="off"></div>
       <div><label>Cote équipe 2</label><input id="b_s2" inputmode="decimal" type="text" autocomplete="off"></div>
     </div>
@@ -180,7 +195,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     
     <div class="grid3">
-      <div><label>Ligne handicap</label><input id="n_h" inputmode="decimal" type="text" autocomplete="off"></div>
+      <div><label>Ligne handicap</label><div class="signrow">
+          <button type="button" class="signbtn" onclick="setHandicapSign('n_h',-1,this)">−</button>
+          <button type="button" class="signbtn" onclick="setHandicapSign('n_h',1,this)">+</button>
+          <input id="n_h" inputmode="decimal" type="text" autocomplete="off">
+        </div></div>
       <div><label>Cote équipe 1</label><input id="n_s1" inputmode="decimal" type="text" autocomplete="off"></div>
       <div><label>Cote équipe 2</label><input id="n_s2" inputmode="decimal" type="text" autocomplete="off"></div>
     </div>
@@ -231,7 +250,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <h2>Handicap Pinnacle</h2>
     <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     <div class="grid3">
-      <div><label>Ligne handicap</label><input id="r_h" inputmode="decimal" type="text" autocomplete="off"></div>
+      <div><label>Ligne handicap</label><div class="signrow">
+          <button type="button" class="signbtn" onclick="setHandicapSign('r_h',-1,this)">−</button>
+          <button type="button" class="signbtn" onclick="setHandicapSign('r_h',1,this)">+</button>
+          <input id="r_h" inputmode="decimal" type="text" autocomplete="off">
+        </div></div>
       <div><label>Cote équipe 1</label><input id="r_s1" inputmode="decimal" type="text" autocomplete="off"></div>
       <div><label>Cote équipe 2</label><input id="r_s2" inputmode="decimal" type="text" autocomplete="off"></div>
     </div>
@@ -258,6 +281,20 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 </div>
 
 <script>
+function setHandicapSign(id,sign,btn){
+ var el=document.getElementById(id);
+ var raw=el.value.trim().replace(',', '.');
+ var n=parseFloat(raw);
+ if(Number.isFinite(n) && n!==0){
+  el.value=(sign<0?'-':'')+Math.abs(n);
+ }else{
+  el.value=sign<0?'-':'';
+ }
+ var row=btn.parentElement;
+ row.querySelectorAll('.signbtn').forEach(function(b){b.classList.remove('active')});
+ btn.classList.add('active');
+ el.focus();
+}
 function showTab(id,el){document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});document.getElementById(id).classList.add('active');el.classList.add('active')}
 function v(id){var raw=document.getElementById(id).value.trim().replace(',', '.');var x=parseFloat(raw);return Number.isFinite(x)?x:null}
 function additive(odds){var q=odds.map(function(x){return 1/x}),m=q.reduce(function(a,b){return a+b},0)-1;return q.map(function(x){return x-m/odds.length})}
