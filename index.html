@@ -8,12 +8,12 @@
 <meta name="theme-color" content="#245f43">
 <title>Calculateur Garanties Sports</title>
 <style>
-:root{--g:#245f43;--bg:#f5f6f7;--bd:#d9dddf;--txt:#151718;--muted:#62676b;--ok:#176c3a;--warn:#9a6700}
+:root{--g:#245f43;--bg:#f5f6f7;--bd:#d9dddf;--txt:#151718;--muted:#62676b;--ok:#176c3a;--warn:#9a6700;--bad:#a32626}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:920px;margin:0 auto;padding:env(safe-area-inset-top) 10px calc(20px + env(safe-area-inset-bottom));background:var(--bg);color:var(--txt)}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:940px;margin:0 auto;padding:env(safe-area-inset-top) 10px calc(20px + env(safe-area-inset-bottom));background:var(--bg);color:var(--txt)}
 .card{background:#fff;border:1px solid var(--bd);border-radius:13px;padding:15px;margin:10px 0}
 h1{font-size:21px;margin:0 0 5px}h2{font-size:16px;margin:0 0 10px}
-.note{font-size:12px;color:var(--muted);line-height:1.45}.warn{color:var(--warn);font-weight:700}.good{color:var(--ok);font-weight:800}
+.note{font-size:12px;color:var(--muted);line-height:1.45}.warn{color:var(--warn);font-weight:750}.bad{color:var(--bad);font-weight:850}.good{color:var(--ok);font-weight:850}
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:10}
 .tab{padding:11px 4px;border:1px solid var(--bd);background:#fff;border-radius:9px;font-weight:750;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tab.active{background:var(--g);color:#fff}.panel{display:none}.panel.active{display:block}
@@ -29,8 +29,12 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 </head>
 <body>
 <div class="card">
-  <h1>Calculateur garanties — instantané</h1>
-  <div class="note">Fair Odds VBF prioritaire si disponible. Sinon dé-vig additif. Les bonus promo sont calculés <b>match par match</b> à partir des marchés Pinnacle, pas avec un bonus fixe.</div>
+  <h1>Calculateur garanties — V2 prudente</h1>
+  <div class="note">
+    Principe commun : la <b>Fair Odds VBF</b> est prioritaire pour la probabilité de victoire normale.
+    Le calculateur estime ensuite uniquement la valeur supplémentaire de la garantie à partir d'un modèle de trajectoire adapté au sport.
+    Aucun modèle ne garantit un profit : si les marchés sont incohérents, le calculateur affiche un avertissement.
+  </div>
 </div>
 
 <div class="tabs">
@@ -42,7 +46,7 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <div id="foot" class="panel active">
   <div class="card">
-    <h2>1X2 Pinnacle <span class="badge">dé-vig additif</span></h2>
+    <h2>1X2 Pinnacle</h2>
     <div class="grid3">
       <div><label>1</label><input id="f_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>X</label><input id="f_ox" inputmode="decimal" type="number" step=".01"></div>
@@ -54,35 +58,36 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Team Goals Pinnacle</h2>
-    <div class="note">Prends idéalement la ligne la plus proche de 50/50 pour chaque équipe.</div><br>
-    <div class="grid2">
-      <div><b>Équipe 1</b><div class="grid3">
-        <div><label>Ligne</label><select id="f_lineA"><option>.5</option><option selected>1.5</option><option>2.5</option><option>3.5</option><option>4.5</option></select></div>
-        <div><label>Over</label><input id="f_overA" inputmode="decimal" type="number" step=".01"></div>
-        <div><label>Under</label><input id="f_underA" inputmode="decimal" type="number" step=".01"></div>
-      </div></div>
-      <div><b>Équipe 2</b><div class="grid3">
-        <div><label>Ligne</label><select id="f_lineB"><option>.5</option><option selected>1.5</option><option>2.5</option><option>3.5</option><option>4.5</option></select></div>
-        <div><label>Over</label><input id="f_overB" inputmode="decimal" type="number" step=".01"></div>
-        <div><label>Under</label><input id="f_underB" inputmode="decimal" type="number" step=".01"></div>
-      </div></div>
+    <h2>Handicap asiatique Pinnacle <span class="badge">ligne centrale</span></h2>
+    <div class="note">Handicap vu depuis l'équipe 1. Exemple : équipe 1 -0,5 → saisis -0,5. Les lignes .25/.75 sont acceptées.</div><br>
+    <div class="grid3">
+      <div><label>Handicap équipe 1</label><input id="f_h" inputmode="decimal" type="number" step=".25"></div>
+      <div><label>Cote équipe 1</label><input id="f_h1" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="f_h2" inputmode="decimal" type="number" step=".01"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Total buts Pinnacle <span class="badge">ligne centrale</span></h2>
+    <div class="grid3">
+      <div><label>Ligne</label><input id="f_t" inputmode="decimal" type="number" step=".25"></div>
+      <div><label>Over</label><input id="f_over" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Under</label><input id="f_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote Winamax 1 (optionnel)</label><input id="f_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote Winamax 2 (optionnel)</label><input id="f_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="f_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="f_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
-  <div class="card"><button class="calc" onclick="calcFoot()">CALCULER FOOT</button></div>
+  <div class="card"><button class="calc" onclick="calcGoalSport('f',2,'FOOT')">CALCULER FOOT</button></div>
   <div class="card hidden" id="f_res"></div>
 </div>
 
 <div id="nfl" class="panel">
   <div class="card">
-    <h2>Moneyline Pinnacle <span class="badge">marché du match</span></h2>
+    <h2>Moneyline Pinnacle</h2>
     <div class="grid2">
-      <div><label>ML équipe 1</label><input id="n_o1" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>ML équipe 2</label><input id="n_o2" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Équipe 1</label><input id="n_o1" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Équipe 2</label><input id="n_o2" inputmode="decimal" type="number" step=".01"></div>
     </div><hr>
     <div class="grid2">
       <div><label>Fair Odds VBF équipe 1 (optionnel)</label><input id="n_fairA" inputmode="decimal" type="number" step=".01"></div>
@@ -90,18 +95,17 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Handicap Pinnacle</h2>
-    <div class="note">Entre le handicap <b>du point de vue équipe 1</b>. Exemple : équipe 1 favorite -8.5 → saisis <b>-8.5</b>.</div><br>
+    <h2>Handicap / spread Pinnacle <span class="badge">ligne centrale</span></h2>
+    <div class="note">Spread = handicap. Vu depuis l'équipe 1 : favorite -8,5 → saisis -8,5.</div><br>
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="n_h" inputmode="decimal" type="number" step=".5" placeholder="-8.5"></div>
+      <div><label>Handicap équipe 1</label><input id="n_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote handicap équipe 1</label><input id="n_s1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote handicap équipe 2</label><input id="n_s2" inputmode="decimal" type="number" step=".01"></div>
     </div>
-    <div class="note">Le modèle déduit directement la marge moyenne et sa volatilité à partir de la ML + handicap. Aucun taux fixe de comeback.</div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote Winamax 1 (optionnel)</label><input id="n_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote Winamax 2 (optionnel)</label><input id="n_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="n_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="n_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcDiffSport('n',17,'FOOT US')">CALCULER FOOT US</button></div>
   <div class="card hidden" id="n_res"></div>
@@ -109,10 +113,10 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <div id="basket" class="panel">
   <div class="card">
-    <h2>Moneyline Pinnacle <span class="badge">marché du match</span></h2>
+    <h2>Moneyline Pinnacle</h2>
     <div class="grid2">
-      <div><label>ML équipe 1</label><input id="b_o1" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>ML équipe 2</label><input id="b_o2" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Équipe 1</label><input id="b_o1" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Équipe 2</label><input id="b_o2" inputmode="decimal" type="number" step=".01"></div>
     </div><hr>
     <div class="grid2">
       <div><label>Fair Odds VBF équipe 1 (optionnel)</label><input id="b_fairA" inputmode="decimal" type="number" step=".01"></div>
@@ -120,18 +124,17 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Handicap Pinnacle</h2>
-    <div class="note">Entre le handicap <b>du point de vue équipe 1</b>. Exemple : équipe 1 outsider +4.5 → saisis <b>+4.5</b>.</div><br>
+    <h2>Handicap / spread Pinnacle <span class="badge">ligne centrale</span></h2>
+    <div class="note">Vu depuis l'équipe 1 : outsider +4,5 → saisis +4,5.</div><br>
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="b_h" inputmode="decimal" type="number" step=".5" placeholder="+4.5"></div>
+      <div><label>Handicap équipe 1</label><input id="b_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote handicap équipe 1</label><input id="b_s1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote handicap équipe 2</label><input id="b_s2" inputmode="decimal" type="number" step=".01"></div>
     </div>
-    <div class="note">Le modèle déduit directement la marge moyenne et sa volatilité à partir de la ML + handicap. Aucun taux fixe de comeback.</div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote Winamax 1 (optionnel)</label><input id="b_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote Winamax 2 (optionnel)</label><input id="b_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="b_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="b_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcDiffSport('b',20,'BASKET')">CALCULER BASKET</button></div>
   <div class="card hidden" id="b_res"></div>
@@ -151,98 +154,151 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Total buts Pinnacle</h2>
+    <h2>Handicap Pinnacle <span class="badge">ligne centrale</span></h2>
+    <div class="note">Handicap vu depuis l'équipe 1. Les lignes .5 et entières sont acceptées.</div><br>
     <div class="grid3">
-      <div><label>Ligne</label><input id="h_line" inputmode="decimal" type="number" step=".5" placeholder="5.5"></div>
+      <div><label>Handicap équipe 1</label><input id="h_h" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Cote équipe 1</label><input id="h_h1" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="h_h2" inputmode="decimal" type="number" step=".01"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Total buts Pinnacle <span class="badge">ligne centrale</span></h2>
+    <div class="grid3">
+      <div><label>Ligne</label><input id="h_t" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Over</label><input id="h_over" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Under</label><input id="h_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote Winamax 1 (optionnel)</label><input id="h_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote Winamax 2 (optionnel)</label><input id="h_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="h_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="h_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
-  <div class="card"><button class="calc" onclick="calcHockey()">CALCULER HOCKEY</button></div>
+  <div class="card"><button class="calc" onclick="calcGoalSport('h',3,'HOCKEY')">CALCULER HOCKEY</button></div>
   <div class="card hidden" id="h_res"></div>
 </div>
 
 <script>
-function showTab(id,el){document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}
-function v(id){const x=parseFloat(document.getElementById(id).value);return Number.isFinite(x)?x:null}
-function additive(odds){const q=odds.map(x=>1/x),m=q.reduce((a,b)=>a+b,0)-1;return q.map(x=>x-m/odds.length)}
-function fmt(x,n=3){return Number.isFinite(x)?x.toFixed(n):'—'}
-function pct(x,n=2){return Number.isFinite(x)?(x*100).toFixed(n)+'%':'—'}
+function showTab(id,el){document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});document.getElementById(id).classList.add('active');el.classList.add('active')}
+function v(id){var x=parseFloat(document.getElementById(id).value);return Number.isFinite(x)?x:null}
+function additive(odds){var q=odds.map(function(x){return 1/x}),m=q.reduce(function(a,b){return a+b},0)-1;return q.map(function(x){return x-m/odds.length})}
+function fmt(x,n){if(n===undefined)n=3;return Number.isFinite(x)?x.toFixed(n):'—'}
+function pct(x,n){if(n===undefined)n=2;return Number.isFinite(x)?(x*100).toFixed(n)+'%':'—'}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
-function erf(x){const s=x<0?-1:1; x=Math.abs(x); const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911;const t=1/(1+p*x);const y=1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t)*Math.exp(-x*x);return s*y}
+function erf(x){var s=x<0?-1:1;x=Math.abs(x);var a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911,t=1/(1+p*x);var y=1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t)*Math.exp(-x*x);return s*y}
 function Phi(x){return .5*(1+erf(x/Math.SQRT2))}
 function invPhi(p){
  p=clamp(p,1e-10,1-1e-10);
- const a=[-39.6968302866538,220.946098424521,-275.928510446969,138.357751867269,-30.6647980661472,2.50662827745924];
- const b=[-54.4760987982241,161.585836858041,-155.698979859887,66.8013118877197,-13.2806815528857];
- const c=[-.00778489400243029,-.322396458041136,-2.40075827716184,-2.54973253934373,4.37466414146497,2.93816398269878];
- const d=[.00778469570904146,.32246712907004,2.445134137143,3.75440866190742];
- const pl=.02425,ph=1-pl; let q,r;
+ var a=[-39.6968302866538,220.946098424521,-275.928510446969,138.357751867269,-30.6647980661472,2.50662827745924];
+ var b=[-54.4760987982241,161.585836858041,-155.698979859887,66.8013118877197,-13.2806815528857];
+ var c=[-.00778489400243029,-.322396458041136,-2.40075827716184,-2.54973253934373,4.37466414146497,2.93816398269878];
+ var d=[.00778469570904146,.32246712907004,2.445134137143,3.75440866190742],pl=.02425,ph=1-pl,q,r;
  if(p<pl){q=Math.sqrt(-2*Math.log(p));return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
  if(p>ph){q=Math.sqrt(-2*Math.log(1-p));return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
  q=p-.5;r=q*q;return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1)
 }
-function poisPMF(l,k){let p=Math.exp(-l);for(let i=1;i<=k;i++)p*=l/i;return p}
-function poisCDF(l,k){if(k<0)return 0;let p=Math.exp(-l),s=p;for(let i=1;i<=k;i++){p*=l/i;s+=p}return s}
-function condOver(l,line){if(Math.abs(line-Math.round(line))<1e-9){const k=Math.round(line),push=poisPMF(l,k),over=1-poisCDF(l,k);return over/(1-push)}return 1-poisCDF(l,Math.floor(line))}
-function solveLambdaMarket(line,overOdd,underOdd){const q=additive([overOdd,underOdd])[0];let lo=.00001,hi=15;for(let i=0;i<90;i++){const mid=(lo+hi)/2;if(condOver(mid,line)<q)lo=mid;else hi=mid}return(lo+hi)/2}
+function poisPMF(l,k){var p=Math.exp(-l);for(var i=1;i<=k;i++)p*=l/i;return p}
+function poisArray(l,max){var a=[Math.exp(-l)];for(var i=1;i<=max;i++)a[i]=a[i-1]*l/i;return a}
+function splitQuarter(line){var q=Math.round(line*4);if(Math.abs(q-line*4)>1e-6)return [line];return Math.abs(q)%2===1?[line-.25,line+.25]:[line]}
+function ahQ(la,lb,line,max){
+ var pa=poisArray(la,max),pb=poisArray(lb,max),subs=splitQuarter(line),ws=0,ls=0;
+ for(var s=0;s<subs.length;s++){var h=subs[s],w=0,l=0;
+  for(var i=0;i<=max;i++)for(var j=0;j<=max;j++){var pr=pa[i]*pb[j],z=i-j+h;if(z>1e-9)w+=pr;else if(z<-1e-9)l+=pr}
+  ws+=w;ls+=l;
+ }
+ return ws/(ws+ls)
+}
+function totalQ(lambda,line,max){
+ var p=poisArray(lambda,max),subs=splitQuarter(line),ws=0,ls=0;
+ for(var s=0;s<subs.length;s++){var h=subs[s],w=0,l=0;
+  for(var i=0;i<=max;i++){var z=i-h;if(z>1e-9)w+=p[i];else if(z<-1e-9)l+=p[i]}
+  ws+=w;ls+=l;
+ }
+ return ws/(ws+ls)
+}
+function oneXTwo(la,lb,max){
+ var pa=poisArray(la,max),pb=poisArray(lb,max),a=0,d=0,b=0;
+ for(var i=0;i<=max;i++)for(var j=0;j<=max;j++){var pr=pa[i]*pb[j];if(i>j)a+=pr;else if(i<j)b+=pr;else d+=pr}
+ var s=a+d+b;return [a/s,d/s,b/s]
+}
+function fitPoissonTargets(p123,qAh,qTot,h,t,max,limit){
+ var best=null;
+ function score(la,lb){
+  var p=oneXTwo(la,lb,max),qa=ahQ(la,lb,h,max),qt=totalQ(la+lb,t,max);
+  var loss=1.25*((p[0]-p123[0])*(p[0]-p123[0])+(p[1]-p123[1])*(p[1]-p123[1])+(p[2]-p123[2])*(p[2]-p123[2]))+
+           3*(qa-qAh)*(qa-qAh)+3*(qt-qTot)*(qt-qTot);
+  var maxerr=Math.max(Math.abs(p[0]-p123[0]),Math.abs(p[1]-p123[1]),Math.abs(p[2]-p123[2]),Math.abs(qa-qAh),Math.abs(qt-qTot));
+  return {la:la,lb:lb,p:p,qa:qa,qt:qt,loss:loss,maxerr:maxerr}
+ }
+ for(var la=.05;la<=limit;la+=.05)for(var lb=.05;lb<=limit;lb+=.05){var z=score(la,lb);if(!best||z.loss<best.loss)best=z}
+ var a0=Math.max(.02,best.la-.12),a1=Math.min(limit,best.la+.12),b0=Math.max(.02,best.lb-.12),b1=Math.min(limit,best.lb+.12);
+ for(var la2=a0;la2<=a1;la2+=.01)for(var lb2=b0;lb2<=b1;lb2+=.01){var z2=score(la2,lb2);if(z2.loss<best.loss)best=z2}
+ return best
+}
 function seqBonus(la,lb,threshold,side){
- const lt=la+lb;if(lt<=0)return 0;const pa=la/lt,pb=lb/lt;let states=new Map([["0|0",1]]),pN=Math.exp(-lt),ans=0;
- for(let n=0;n<=50;n++){if(n>0){const nx=new Map();for(const[key,pr]of states){const[ds,hs]=key.split("|"),d=+ds,hit=hs==="1";let d1=d+1,h1=hit||(side==="A"?d1>=threshold:d1<=-threshold);const k1=d1+"|"+(h1?1:0);nx.set(k1,(nx.get(k1)||0)+pr*pa);let d2=d-1,h2=hit||(side==="A"?d2>=threshold:d2<=-threshold);const k2=d2+"|"+(h2?1:0);nx.set(k2,(nx.get(k2)||0)+pr*pb)}states=nx;pN=pN*lt/n}
- for(const[key,pr]of states){const[ds,hs]=key.split("|"),d=+ds,hit=hs==="1";const nonWin=side==="A"?d<=0:d>=0;if(hit&&nonWin)ans+=pN*pr}}
+ var lt=la+lb;if(lt<=0)return 0;var pa=la/lt,pb=lb/lt,states=new Map([["0|0",1]]),pN=Math.exp(-lt),ans=0;
+ for(var n=0;n<=55;n++){
+  if(n>0){var nx=new Map();states.forEach(function(pr,key){var sp=key.split("|"),d=+sp[0],hit=sp[1]==="1";
+    var d1=d+1,h1=hit||(side==="A"?d1>=threshold:d1<=-threshold),k1=d1+"|"+(h1?1:0);nx.set(k1,(nx.get(k1)||0)+pr*pa);
+    var d2=d-1,h2=hit||(side==="A"?d2>=threshold:d2<=-threshold),k2=d2+"|"+(h2?1:0);nx.set(k2,(nx.get(k2)||0)+pr*pb)
+  });states=nx;pN=pN*lt/n}
+  states.forEach(function(pr,key){var sp=key.split("|"),d=+sp[0],hit=sp[1]==="1",nonWin=side==="A"?d<=0:d>=0;if(hit&&nonWin)ans+=pN*pr})
+ }
  return ans
 }
-function twoWayBase(o1,o2,fA,fB){let p=additive([o1,o2]);if(fA)p[0]=1/fA;if(fB)p[1]=1/fB;if(fA&&fB){const s=p[0]+p[1];p=[p[0]/s,p[1]/s]}return p}
-function threeWayBase(o1,ox,o2,fA,fB){let p=additive([o1,ox,o2]);if(fA)p[0]=1/fA;if(fB)p[2]=1/fB;return p}
-function resultTable(pA,pB,rA,rB,wA,wB,extra=''){
- const ppA=clamp(pA+rA,1e-9,.999999),ppB=clamp(pB+rB,1e-9,.999999),fa=1/pA,fb=1/pB,fga=1/ppA,fgb=1/ppB;
- const evA=wA?wA*ppA-1:null,evB=wB?wB*ppB-1:null;
+function resultTable(pA,pB,rA,rB,wA,wB,extra,prudent){
+ var ppA=clamp(pA+rA,1e-9,.999999),ppB=clamp(pB+rB,1e-9,.999999),fa=1/pA,fb=1/pB,fga=1/ppA,fgb=1/ppB;
+ var evA=wA?wA*ppA-1:null,evB=wB?wB*ppB-1:null;
+ var pr=prudent||.02;
  return '<table><tr><th></th><th>Équipe 1</th><th>Équipe 2</th></tr>'+
  '<tr><td>Fair classique</td><td>'+fmt(fa)+'</td><td>'+fmt(fb)+'</td></tr>'+
- '<tr><td>Bonus garantie utile</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
+ '<tr><td>Bonus garantie modèle</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
  '<tr><td><b>Fair garantie EV0</b></td><td class="big">'+fmt(fga)+'</td><td class="big">'+fmt(fgb)+'</td></tr>'+
- '<tr><td><b>Seuil +1% EV</b></td><td class="big">'+(1.01/ppA).toFixed(2)+'+</td><td class="big">'+(1.01/ppB).toFixed(2)+'+</td></tr>'+
- '<tr><td>Seuil +2% EV</td><td>'+(1.02/ppA).toFixed(2)+'+</td><td>'+(1.02/ppB).toFixed(2)+'+</td></tr>'+
+ '<tr><td>Seuil +1% EV</td><td>'+(1.01/ppA).toFixed(2)+'+</td><td>'+(1.01/ppB).toFixed(2)+'+</td></tr>'+
+ '<tr><td><b>Seuil prudent +'+Math.round(pr*100)+'%</b></td><td class="big">'+((1+pr)/ppA).toFixed(2)+'+</td><td class="big">'+((1+pr)/ppB).toFixed(2)+'+</td></tr>'+
  '<tr><td>EV cote Winamax</td><td class="good">'+(evA===null?'—':pct(evA))+'</td><td class="good">'+(evB===null?'—':pct(evB))+'</td></tr></table>'+extra
 }
-function calcFoot(){
- const a=v('f_o1'),x=v('f_ox'),b=v('f_o2'),oa=v('f_overA'),ua=v('f_underA'),ob=v('f_overB'),ub=v('f_underB'),laa=v('f_lineA'),lbb=v('f_lineB');
- if([a,x,b,oa,ua,ob,ub,laa,lbb].some(z=>z===null||z<=0)){alert('Remplis 1/X/2 et les Team Goals.');return}
- const p=threeWayBase(a,x,b,v('f_fairA'),v('f_fairB')),la=solveLambdaMarket(laa,oa,ua),lb=solveLambdaMarket(lbb,ob,ub),ra=seqBonus(la,lb,2,'A'),rb=seqBonus(la,lb,2,'B');
- const el=document.getElementById('f_res');el.innerHTML=resultTable(p[0],p[2],ra,rb,v('f_wa'),v('f_wb'),'<div class="note">λ buts : équipe 1 '+la.toFixed(2)+' · équipe 2 '+lb.toFixed(2)+'. Bonus = P(atteint +2 puis ne gagne pas).</div>');el.classList.remove('hidden')
+function calcGoalSport(prefix,threshold,label){
+ var o1=v(prefix+'_o1'),ox=v(prefix+'_ox'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),h1=v(prefix+'_h1'),h2=v(prefix+'_h2'),t=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
+ if([o1,ox,o2,h,h1,h2,t,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||h1<=1||h2<=1||ov<=1||un<=1){alert('Remplis 1/X/2, handicap et total.');return}
+ var p123=additive([o1,ox,o2]),qAh=additive([h1,h2])[0],qTot=additive([ov,un])[0];
+ var max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5,fit=fitPoissonTargets(p123,qAh,qTot,h,t,max,limit);
+ var baseA=v(prefix+'_fairA')?1/v(prefix+'_fairA'):p123[0],baseB=v(prefix+'_fairB')?1/v(prefix+'_fairB'):p123[2];
+ var rA=seqBonus(fit.la,fit.lb,threshold,'A'),rB=seqBonus(fit.la,fit.lb,threshold,'B');
+ var status=fit.maxerr>.03?'<div class="bad">⚠ Marchés trop incohérents avec le modèle (écart max '+(fit.maxerr*100).toFixed(1)+' pt). Je déconseille d’utiliser cette estimation.</div>':
+            fit.maxerr>.018?'<div class="warn">⚠ Ajustement moyen : écart max '+(fit.maxerr*100).toFixed(1)+' pt. Garde une marge de sécurité.</div>':
+            '<div class="good">✓ Ajustement marchés correct : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>';
+ var details='<div class="note">λ équipe 1 = '+fit.la.toFixed(2)+' · λ équipe 2 = '+fit.lb.toFixed(2)+' · modèle ajusté conjointement sur 1X2 + handicap + total. Bonus = P(atteint +'+threshold+' puis ne gagne pas).</div>'+status;
+ var el=document.getElementById(prefix+'_res');el.innerHTML=resultTable(baseA,baseB,rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details,.02);el.classList.remove('hidden')
+}
+function twoWayBase(o1,o2,fA,fB){
+ var p=additive([o1,o2]);
+ if(fA)p[0]=1/fA;if(fB)p[1]=1/fB;
+ if(fA&&fB){var s=p[0]+p[1];p=[p[0]/s,p[1]/s]}
+ return p
+}
+function calibrateDiff(pWin,h,pCover){
+ var zw=invPhi(pWin),zc=invPhi(pCover),den=zc-zw;
+ if(Math.abs(h)<.05||Math.abs(den)<1e-5)return null;
+ var sigma=h/den;if(!(sigma>0&&Number.isFinite(sigma)))return null;
+ return {mu:zw*sigma,sigma:sigma}
 }
 function brownianBonus(mu,sigma,a,side){
  if(!(sigma>0))return NaN;
  if(side==='A')return Math.exp(2*mu*a/(sigma*sigma))*Phi((-2*a-mu)/sigma);
  return Math.exp(-2*mu*a/(sigma*sigma))*Phi((-2*a+mu)/sigma)
 }
-function calibrateDiff(pWin,h,pCover){
- const zw=invPhi(pWin),zc=invPhi(pCover),den=zc-zw;
- if(Math.abs(h)<0.05||Math.abs(den)<1e-5)return null;
- const sigma=h/den;if(!(sigma>0&&Number.isFinite(sigma)))return null;
- return {mu:zw*sigma,sigma}
-}
 function calcDiffSport(prefix,threshold,label){
- const o1=v(prefix+'_o1'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),s1=v(prefix+'_s1'),s2=v(prefix+'_s2');
- if([o1,o2,h,s1,s2].some(z=>z===null)||o1<=1||o2<=1||s1<=1||s2<=1){alert('Remplis ML, handicap et les deux cotes handicap.');return}
- const p=twoWayBase(o1,o2,v(prefix+'_fairA'),v(prefix+'_fairB')),pc=additive([s1,s2])[0],cal=calibrateDiff(p[0],h,pc),el=document.getElementById(prefix+'_res');
- if(!cal){el.innerHTML='<div class="warn">Calibration impossible avec cette ligne (souvent handicap 0 / pick’em). Utilise une ligne handicap alternative non nulle si disponible.</div>';el.classList.remove('hidden');return}
- const ra=brownianBonus(cal.mu,cal.sigma,threshold,'A'),rb=brownianBonus(cal.mu,cal.sigma,threshold,'B');
- let warning='';if(cal.sigma<5||cal.sigma>35)warning='<div class="warn">⚠ Volatilité implicite inhabituelle : vérifie que le signe du handicap équipe 1 est correct.</div>';
- el.innerHTML=resultTable(p[0],p[1],ra,rb,v(prefix+'_wa'),v(prefix+'_wb'),'<div class="note">'+label+' : marge finale implicite équipe 1 = '+cal.mu.toFixed(2)+' pts · σ = '+cal.sigma.toFixed(2)+' pts. Bonus = P(atteint +'+threshold+' puis ne gagne pas), via trajectoire de marge calibrée sur ML + handicap.</div>'+warning);el.classList.remove('hidden')
-}
-function poissonWinProbs(la,lb){const mx=22;let pa=0,pb=0,draw=0;for(let i=0;i<=mx;i++){const pi=poisPMF(la,i);for(let j=0;j<=mx;j++){const pr=pi*poisPMF(lb,j);if(i>j)pa+=pr;else if(i<j)pb+=pr;else draw+=pr}}return[pa,draw,pb]}
-function fitHockeySplit(total,pA,pB){let best=null;for(let i=20;i<=980;i++){const s=i/1000,la=total*s,lb=total-la,q=poissonWinProbs(la,lb),loss=(q[0]-pA)**2+(q[2]-pB)**2;if(!best||loss<best.loss)best={la,lb,q,loss}}return best}
-function calcHockey(){
- const a=v('h_o1'),x=v('h_ox'),b=v('h_o2'),line=v('h_line'),ov=v('h_over'),un=v('h_under');
- if([a,x,b,line,ov,un].some(z=>z===null)||a<=1||x<=1||b<=1||ov<=1||un<=1){alert('Remplis 1/X/2 et le total.');return}
- const p=threeWayBase(a,x,b,v('h_fairA'),v('h_fairB')),lt=solveLambdaMarket(line,ov,un),fit=fitHockeySplit(lt,p[0],p[2]),ra=seqBonus(fit.la,fit.lb,3,'A'),rb=seqBonus(fit.la,fit.lb,3,'B'),err=Math.max(Math.abs(fit.q[0]-p[0]),Math.abs(fit.q[2]-p[2]));
- const warning=err>.025?'<div class="warn">⚠ Écart modèle/marché '+(err*100).toFixed(1)+' pt : prudence.</div>':'';
- const el=document.getElementById('h_res');el.innerHTML=resultTable(p[0],p[2],ra,rb,v('h_wa'),v('h_wb'),'<div class="note">λ total '+lt.toFixed(2)+' · équipe 1 '+fit.la.toFixed(2)+' · équipe 2 '+fit.lb.toFixed(2)+'. Bonus = P(atteint +3 puis ne gagne pas).</div>'+warning);el.classList.remove('hidden')
+ var o1=v(prefix+'_o1'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),s1=v(prefix+'_s1'),s2=v(prefix+'_s2');
+ if([o1,o2,h,s1,s2].some(function(z){return z===null})||o1<=1||o2<=1||s1<=1||s2<=1){alert('Remplis moneyline et handicap.');return}
+ var p=twoWayBase(o1,o2,v(prefix+'_fairA'),v(prefix+'_fairB')),pc=additive([s1,s2])[0],cal=calibrateDiff(p[0],h,pc),el=document.getElementById(prefix+'_res');
+ if(!cal){el.innerHTML='<div class="bad">Calibration impossible avec cette ligne. Utilise un handicap non nul proche de 50/50.</div>';el.classList.remove('hidden');return}
+ var rA=brownianBonus(cal.mu,cal.sigma,threshold,'A'),rB=brownianBonus(cal.mu,cal.sigma,threshold,'B');
+ var lo=label==='FOOT US'?8:6,hi=label==='FOOT US'?20:20;
+ var warning=(cal.sigma<lo||cal.sigma>hi)?'<div class="bad">⚠ Volatilité implicite atypique (σ '+cal.sigma.toFixed(1)+'). Je déconseille d’utiliser cette estimation sans contrôle.</div>':
+             '<div class="good">✓ Volatilité implicite cohérente : σ '+cal.sigma.toFixed(1)+'.</div>';
+ var details='<div class="note">'+label+' : modèle de différence de score (mouvement brownien) calibré directement sur la Fair ML + le handicap. Marge finale implicite équipe 1 = '+cal.mu.toFixed(2)+' pts. Bonus = P(atteint +'+threshold+' puis ne gagne pas). Le total n’est pas forcé dans le calcul car ML + handicap identifient déjà moyenne et volatilité de la marge.</div>'+warning;
+ el.innerHTML=resultTable(p[0],p[1],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details,.03);el.classList.remove('hidden')
 }
 </script>
 </body></html>
