@@ -14,7 +14,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:98
 .card{background:#fff;border:1px solid var(--bd);border-radius:13px;padding:15px;margin:10px 0}
 h1{font-size:21px;margin:0 0 5px}h2{font-size:16px;margin:0 0 10px}
 .note{font-size:12px;color:var(--muted);line-height:1.45}.warn{color:var(--warn);font-weight:750}.bad{color:var(--bad);font-weight:850}.good{color:var(--ok);font-weight:850}
-.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:10}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:10}
 .tab{padding:11px 3px;border:1px solid var(--bd);background:#fff;border-radius:9px;font-weight:750;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:13px}
 .tab.active{background:var(--g);color:#fff}.panel{display:none}.panel.active{display:block}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -43,14 +43,12 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
   <button class="tab" onclick="showTab('basket',this)">🏀 Basket +20</button>
   <button class="tab" onclick="showTab('nfl',this)">🏈 US +17</button>
   <button class="tab" onclick="showTab('rugby',this)">🏉 Rugby +15</button>
-  <button class="tab" onclick="showTab('tennis',this)">🎾 Tennis</button>
 </div>
 
 <!-- FOOT -->
 <div id="foot" class="panel active">
   <div class="card">
     <h2>1X2 Pinnacle</h2>
-    <div class="note">Équipe 1 = première équipe affichée, équipe 2 = seconde.</div><br>
     <div class="grid3">
       <div><label>1</label><input id="f_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>X</label><input id="f_ox" inputmode="decimal" type="number" step=".01"></div>
@@ -59,10 +57,10 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
   </div>
   <div class="card">
     <h2>Handicap Pinnacle</h2>
-    <div class="note">Saisis la ligne du point de vue de l’équipe 1 : négative si elle est favorite, positive si elle est outsider.</div><br>
+    <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="f_h" inputmode="decimal" type="number" step=".25"></div>
+      <div><label>Ligne handicap</label><input id="f_h" inputmode="decimal" type="number" step=".25"></div>
       <div><label>Cote équipe 1</label><input id="f_h1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote équipe 2</label><input id="f_h2" inputmode="decimal" type="number" step=".01"></div>
     </div>
@@ -71,20 +69,20 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <h2>Total Pinnacle</h2>
     <div class="note">Choisis la ligne la plus proche de 50/50, puis saisis les cotes Over et Under.</div><br>
     <div class="grid3">
-      <div><label>Ligne</label><input id="f_t" inputmode="decimal" type="number" step=".25"></div>
-      <div><label>Over</label><input id="f_over" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Under</label><input id="f_under" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Ligne du total</label><input id="f_t" inputmode="decimal" type="number" step=".25"></div>
+      <div><label>Cote Over</label><input id="f_over" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Under</label><input id="f_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card">
     <h2>Cotes Winamax</h2>
     <div class="note">Optionnel : renseigne la cote disponible pour afficher l’EV par rapport à la fair garantie.</div><br>
     <div class="grid2">
-      <div><label>Équipe 1</label><input id="f_wa" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Équipe 2</label><input id="f_wb" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 1</label><input id="f_wa" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="f_wb" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
-  <div class="card"><button class="calc" onclick="calcGoalSport('f',2,'FOOT')">CALCULER FOOT</button></div>
+  <div class="card"><button class="calc" onclick="calcGoalSport('f',2,'FOOT')">CALCULER</button></div>
   <div class="card hidden" id="f_res"></div>
 </div>
 
@@ -92,7 +90,6 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 <div id="hockey" class="panel">
   <div class="card">
     <h2>1X2 Pinnacle — temps réglementaire</h2>
-    <div class="note">Équipe 1 = première équipe affichée, équipe 2 = seconde.</div><br>
     <div class="grid3">
       <div><label>1</label><input id="h_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>X</label><input id="h_ox" inputmode="decimal" type="number" step=".01"></div>
@@ -101,9 +98,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
   </div>
   <div class="card">
     <h2>Handicap Pinnacle</h2>
-    <div class="note">Saisis la ligne du point de vue de l’équipe 1 : négative si elle est favorite, positive si elle est outsider.</div><br>
+    <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="h_h" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne handicap</label><input id="h_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote équipe 1</label><input id="h_h1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote équipe 2</label><input id="h_h2" inputmode="decimal" type="number" step=".01"></div>
     </div>
@@ -112,20 +109,20 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <h2>Total Pinnacle</h2>
     <div class="note">Choisis la ligne la plus proche de 50/50, puis saisis les cotes Over et Under.</div><br>
     <div class="grid3">
-      <div><label>Ligne</label><input id="h_t" inputmode="decimal" type="number" step=".5"></div>
-      <div><label>Over</label><input id="h_over" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Under</label><input id="h_under" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Ligne du total</label><input id="h_t" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Cote Over</label><input id="h_over" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Under</label><input id="h_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card">
     <h2>Cotes Winamax</h2>
     <div class="note">Optionnel : renseigne la cote disponible pour afficher l’EV par rapport à la fair garantie.</div><br>
     <div class="grid2">
-      <div><label>Équipe 1</label><input id="h_wa" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Équipe 2</label><input id="h_wb" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 1</label><input id="h_wa" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="h_wb" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
-  <div class="card"><button class="calc" onclick="calcGoalSport('h',3,'HOCKEY')">CALCULER HOCKEY</button></div>
+  <div class="card"><button class="calc" onclick="calcGoalSport('h',3,'HOCKEY')">CALCULER</button></div>
   <div class="card hidden" id="h_res"></div>
 </div>
 
@@ -133,7 +130,6 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 <div id="basket" class="panel">
   <div class="card">
     <h2>Moneyline Pinnacle</h2>
-    <div class="note">Équipe 1 = première équipe affichée, équipe 2 = seconde.</div><br>
     <div class="grid2">
       <div><label>Équipe 1</label><input id="b_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Équipe 2</label><input id="b_o2" inputmode="decimal" type="number" step=".01"></div>
@@ -141,10 +137,10 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
   </div>
   <div class="card">
     <h2>Handicap Pinnacle</h2>
-    <div class="note">Saisis la ligne du point de vue de l’équipe 1 : négative si elle est favorite, positive si elle est outsider.</div><br>
+    <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="b_h" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne handicap</label><input id="b_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote équipe 1</label><input id="b_s1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote équipe 2</label><input id="b_s2" inputmode="decimal" type="number" step=".01"></div>
     </div>
@@ -154,19 +150,19 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Choisis la ligne la plus proche de 50/50, puis saisis les cotes Over et Under.</div><br>
     <div class="grid3">
       <div><label>Ligne du total</label><input id="b_t" inputmode="decimal" type="number" step=".5"></div>
-      <div><label>Over</label><input id="b_over" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Under</label><input id="b_under" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Over</label><input id="b_over" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Under</label><input id="b_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card">
     <h2>Cotes Winamax</h2>
     <div class="note">Optionnel : renseigne la cote disponible pour afficher l’EV par rapport à la fair garantie.</div><br>
     <div class="grid2">
-      <div><label>Équipe 1</label><input id="b_wa" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Équipe 2</label><input id="b_wb" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 1</label><input id="b_wa" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="b_wb" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
-  <div class="card"><button class="calc" onclick="calcBridgeSport('b',20,'BASKET',1.30)">CALCULER BASKET</button></div>
+  <div class="card"><button class="calc" onclick="calcBridgeSport('b',20,'BASKET',1.30)">CALCULER</button></div>
   <div class="card hidden" id="b_res"></div>
 </div>
 
@@ -174,7 +170,6 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 <div id="nfl" class="panel">
   <div class="card">
     <h2>Moneyline Pinnacle</h2>
-    <div class="note">Équipe 1 = première équipe affichée, équipe 2 = seconde.</div><br>
     <div class="grid2">
       <div><label>Équipe 1</label><input id="n_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Équipe 2</label><input id="n_o2" inputmode="decimal" type="number" step=".01"></div>
@@ -182,10 +177,10 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
   </div>
   <div class="card">
     <h2>Handicap Pinnacle</h2>
-    <div class="note">Saisis la ligne du point de vue de l’équipe 1 : négative si elle est favorite, positive si elle est outsider.</div><br>
+    <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="n_h" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne handicap</label><input id="n_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote équipe 1</label><input id="n_s1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote équipe 2</label><input id="n_s2" inputmode="decimal" type="number" step=".01"></div>
     </div>
@@ -195,19 +190,19 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Choisis la ligne la plus proche de 50/50, puis saisis les cotes Over et Under.</div><br>
     <div class="grid3">
       <div><label>Ligne du total</label><input id="n_t" inputmode="decimal" type="number" step=".5"></div>
-      <div><label>Over</label><input id="n_over" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Under</label><input id="n_under" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Over</label><input id="n_over" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Under</label><input id="n_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card">
     <h2>Cotes Winamax</h2>
     <div class="note">Optionnel : renseigne la cote disponible pour afficher l’EV par rapport à la fair garantie.</div><br>
     <div class="grid2">
-      <div><label>Équipe 1</label><input id="n_wa" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Équipe 2</label><input id="n_wb" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 1</label><input id="n_wa" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="n_wb" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
-  <div class="card"><button class="calc" onclick="calcBridgeSport('n',17,'FOOT US',4.63)">CALCULER FOOT US</button></div>
+  <div class="card"><button class="calc" onclick="calcBridgeSport('n',17,'FOOT US',4.63)">CALCULER</button></div>
   <div class="card hidden" id="n_res"></div>
 </div>
 
@@ -226,7 +221,6 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
     <hr>
     <h2>1X2 Pinnacle</h2>
-    <div class="note">Équipe 1 = première équipe affichée, équipe 2 = seconde.</div><br>
     <div class="grid3">
       <div><label>1</label><input id="r_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>X</label><input id="r_ox" inputmode="decimal" type="number" step=".01"></div>
@@ -235,9 +229,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
   </div>
   <div class="card">
     <h2>Handicap Pinnacle</h2>
-    <div class="note">Saisis la ligne du point de vue de l’équipe 1 : négative si elle est favorite, positive si elle est outsider.</div><br>
+    <div class="note">Saisis le handicap de l’équipe 1 : négatif si elle est favorite, positif si elle est outsider.</div><br>
     <div class="grid3">
-      <div><label>Handicap équipe 1</label><input id="r_h" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne handicap</label><input id="r_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote équipe 1</label><input id="r_s1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Cote équipe 2</label><input id="r_s2" inputmode="decimal" type="number" step=".01"></div>
     </div>
@@ -247,54 +241,20 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Choisis la ligne la plus proche de 50/50, puis saisis les cotes Over et Under.</div><br>
     <div class="grid3">
       <div><label>Ligne du total</label><input id="r_t" inputmode="decimal" type="number" step=".5"></div>
-      <div><label>Over</label><input id="r_over" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Under</label><input id="r_under" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Over</label><input id="r_over" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote Under</label><input id="r_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card">
     <h2>Cotes Winamax</h2>
     <div class="note">Optionnel : renseigne la cote disponible pour afficher l’EV par rapport à la fair garantie.</div><br>
     <div class="grid2">
-      <div><label>Équipe 1</label><input id="r_wa" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Équipe 2</label><input id="r_wb" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 1</label><input id="r_wa" inputmode="decimal" type="number" step=".01"></div>
+      <div><label>Cote équipe 2</label><input id="r_wb" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
-  <div class="card"><button class="calc" onclick="calcRugby()">CALCULER RUGBY</button></div>
+  <div class="card"><button class="calc" onclick="calcRugby()">CALCULER</button></div>
   <div class="card hidden" id="r_res"></div>
-</div>
-
-<!-- TENNIS -->
-<div id="tennis" class="panel">
-  <div class="card">
-    <h2>Moneyline Pinnacle — simple ATP/WTA</h2>
-    <div class="note">Joueur 1 = premier joueur affiché, joueur 2 = second.</div><br>
-    <div class="grid2">
-      <div><label>Joueur 1</label><input id="t_o1" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Joueur 2</label><input id="t_o2" inputmode="decimal" type="number" step=".01"></div>
-    </div>
-  </div>
-  <div class="card">
-    <h2>Contexte retraite</h2>
-    <div class="grid2">
-      <div><label>Circuit</label>
-        <select id="t_tour"><option value="ATP">ATP</option><option value="WTA">WTA</option></select>
-      </div>
-      <div><label>Surface</label>
-        <select id="t_surface"><option value="all">Toutes / inconnue</option><option value="hard">Dur</option><option value="clay">Terre battue</option><option value="grass">Gazon</option></select>
-      </div>
-    </div>
-    <div class="note">Le tennis ne peut pas être estimé aussi précisément sans information médicale propre aux joueurs. Le calcul utilise donc une base historique ATP/WTA et affiche une <b>fourchette</b>, pas une fausse précision.</div>
-  </div>
-  <div class="card">
-    <h2>Cotes Winamax</h2>
-    <div class="note">Optionnel : renseigne la cote disponible pour afficher l’EV par rapport à la fair garantie.</div><br>
-    <div class="grid2">
-      <div><label>Joueur 1</label><input id="t_wa" inputmode="decimal" type="number" step=".01"></div>
-      <div><label>Joueur 2</label><input id="t_wb" inputmode="decimal" type="number" step=".01"></div>
-    </div>
-  </div>
-  <div class="card"><button class="calc" onclick="calcTennis()">CALCULER TENNIS</button></div>
-  <div class="card hidden" id="t_res"></div>
 </div>
 
 <script>
@@ -501,37 +461,6 @@ function calcRugby(){
  var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Les intensités sont ajustées sur 1X2 + handicap + total, puis le calcul suit les chemins pouvant atteindre +15 avant de ne pas gagner.</div>'+status+
  '<div class="warn">⚠ Le profil d’événements est générique à chaque code de rugby ; la précision peut varier selon compétition et style de jeu.</div>';
  var el=document.getElementById('r_res');el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
-}
-function tennisRate(tour,surface){
- var rates={
-  ATP:{all:.0211,hard:.0234,clay:.0213,grass:.0192},
-  WTA:{all:.0173,hard:.0204,clay:.0155,grass:.0111}
- };
- return rates[tour][surface]
-}
-function tennisFair(p,R,s){
- var qOpp=R*s/2,qSelf=R*s/2,qEarly=R*(1-s),qVoid=qSelf+qEarly,qComplete=1-R;
- var paidWin=qComplete*p+qOpp;
- return{fair:(1-qVoid)/paidWin,qOpp:qOpp,qVoid:qVoid,paidWin:paidWin}
-}
-function calcTennis(){
- var o1=v('t_o1'),o2=v('t_o2');
- if([o1,o2].some(function(z){return z===null})||o1<=1||o2<=1){alert('Remplis les deux moneylines Pinnacle.');return}
- var p=additive([o1,o2]),tour=document.getElementById('t_tour').value,surface=document.getElementById('t_surface').value,R=tennisRate(tour,surface);
- var c1=tennisFair(p[0],R,.55),c2=tennisFair(p[1],R,.55),lo1=tennisFair(p[0],R,.40),hi1=tennisFair(p[0],R,.70),lo2=tennisFair(p[1],R,.40),hi2=tennisFair(p[1],R,.70);
- var w1=v('t_wa'),w2=v('t_wb');
- function ev(w,c){return w? w*c.paidWin+c.qVoid-1:null}
- var range1=Math.min(lo1.fair,hi1.fair).toFixed(3)+' – '+Math.max(lo1.fair,hi1.fair).toFixed(3);
- var range2=Math.min(lo2.fair,hi2.fair).toFixed(3)+' – '+Math.max(lo2.fair,hi2.fair).toFixed(3);
- var html='<table><tr><th></th><th>Joueur 1</th><th>Joueur 2</th></tr>'+
- '<tr><td>Fair classique Pinnacle</td><td>'+fmt(1/p[0])+'</td><td>'+fmt(1/p[1])+'</td></tr>'+
- '<tr><td>Risque central : adversaire abandon après set 1</td><td>'+(c1.qOpp*100).toFixed(2)+'%</td><td>'+(c2.qOpp*100).toFixed(2)+'%</td></tr>'+
- '<tr><td><b>FAIR GARANTIE (centrale)</b></td><td class="big">'+fmt(c1.fair)+'</td><td class="big">'+fmt(c2.fair)+'</td></tr>'+
- '<tr><td>Fourchette prudente</td><td class="range">'+range1+'</td><td class="range">'+range2+'</td></tr>'+
- '<tr><td>EV à la cote saisie</td><td class="good">'+(w1===null?'—':pct(ev(w1,c1)))+'</td><td class="good">'+(w2===null?'—':pct(ev(w2,c2)))+'</td></tr></table>'+
- '<div class="note">Taux historique de retraite utilisé : '+(R*100).toFixed(2)+'% des matchs ('+tour+', '+surface+'). Hypothèse centrale : 55% des retraites surviennent après le 1er set et répartition 50/50 entre les deux joueurs. La fourchette utilise 40–70% après le 1er set.</div>'+
- '<div class="warn">⚠ Le tennis est une estimation générique. Une blessure connue, un retour de blessure ou un joueur particulièrement fragile peut rendre la vraie probabilité très différente. Ne traite pas la fair centrale comme une vérité au centième.</div>';
- var el=document.getElementById('t_res');el.innerHTML=html;el.classList.remove('hidden')
 }
 </script>
 </body></html>
