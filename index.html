@@ -48,6 +48,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <!-- FOOT -->
 <div id="foot" class="panel active">
+<div class="card">
+  <div class="note"><b>Convention de saisie :</b> Équipe 1 = équipe affichée en premier, Équipe 2 = équipe affichée en second. Pour le handicap, saisis la ligne du point de vue de l’Équipe 1 (ex. -4,5 si l’Équipe 1 est favorite ; +4,5 si elle est outsider). Pour le total, choisis la ligne la plus proche de 50/50 et saisis la cote Over puis la cote Under. Toutes les cotes ci-dessus sont Pinnacle ; le dernier bloc est uniquement la cote Winamax.</div>
+</div>
   <div class="card">
     <h2>1X2 Pinnacle</h2>
     <div class="grid3">
@@ -57,8 +60,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Handicap asiatique Pinnacle <span class="badge">ligne centrale</span></h2>
-    <div class="note">Vu depuis l'équipe 1. Ex. équipe 1 -0,5 → saisis -0,5.</div><br>
+    <h2>Handicap Pinnacle <span class="badge">ligne centrale</span></h2>
+    
     <div class="grid3">
       <div><label>Handicap équipe 1</label><input id="f_h" inputmode="decimal" type="number" step=".25"></div>
       <div><label>Cote équipe 1</label><input id="f_h1" inputmode="decimal" type="number" step=".01"></div>
@@ -66,7 +69,7 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Total buts Pinnacle <span class="badge">ligne centrale</span></h2>
+    <h2>Total Pinnacle <span class="badge">ligne centrale</span></h2>
     <div class="grid3">
       <div><label>Ligne</label><input id="f_t" inputmode="decimal" type="number" step=".25"></div>
       <div><label>Over</label><input id="f_over" inputmode="decimal" type="number" step=".01"></div>
@@ -74,8 +77,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote bookmaker équipe 1 (optionnel)</label><input id="f_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote bookmaker équipe 2 (optionnel)</label><input id="f_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="f_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="f_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcGoalSport('f',2,'FOOT')">CALCULER FOOT</button></div>
   <div class="card hidden" id="f_res"></div>
@@ -83,6 +86,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <!-- HOCKEY -->
 <div id="hockey" class="panel">
+<div class="card">
+  <div class="note"><b>Convention de saisie :</b> Équipe 1 = équipe affichée en premier, Équipe 2 = équipe affichée en second. Pour le handicap, saisis la ligne du point de vue de l’Équipe 1 (ex. -4,5 si l’Équipe 1 est favorite ; +4,5 si elle est outsider). Pour le total, choisis la ligne la plus proche de 50/50 et saisis la cote Over puis la cote Under. Toutes les cotes ci-dessus sont Pinnacle ; le dernier bloc est uniquement la cote Winamax.</div>
+</div>
   <div class="card">
     <h2>1X2 Pinnacle — temps réglementaire</h2>
     <div class="grid3">
@@ -100,7 +106,7 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Total buts Pinnacle <span class="badge">ligne centrale</span></h2>
+    <h2>Total Pinnacle <span class="badge">ligne centrale</span></h2>
     <div class="grid3">
       <div><label>Ligne</label><input id="h_t" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Over</label><input id="h_over" inputmode="decimal" type="number" step=".01"></div>
@@ -108,8 +114,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote bookmaker équipe 1 (optionnel)</label><input id="h_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote bookmaker équipe 2 (optionnel)</label><input id="h_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="h_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="h_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcGoalSport('h',3,'HOCKEY')">CALCULER HOCKEY</button></div>
   <div class="card hidden" id="h_res"></div>
@@ -117,6 +123,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <!-- BASKET -->
 <div id="basket" class="panel">
+<div class="card">
+  <div class="note"><b>Convention de saisie :</b> Équipe 1 = équipe affichée en premier, Équipe 2 = équipe affichée en second. Pour le handicap, saisis la ligne du point de vue de l’Équipe 1 (ex. -4,5 si l’Équipe 1 est favorite ; +4,5 si elle est outsider). Pour le total, choisis la ligne la plus proche de 50/50 et saisis la cote Over puis la cote Under. Toutes les cotes ci-dessus sont Pinnacle ; le dernier bloc est uniquement la cote Winamax.</div>
+</div>
   <div class="card">
     <h2>Moneyline Pinnacle</h2>
     <div class="grid2">
@@ -125,8 +134,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Handicap / spread Pinnacle <span class="badge">ligne centrale</span></h2>
-    <div class="note">Spread = handicap. Vu depuis l'équipe 1 : outsider +4,5 → +4,5.</div><br>
+    <h2>Handicap Pinnacle <span class="badge">ligne centrale</span></h2>
+    
     <div class="grid3">
       <div><label>Handicap équipe 1</label><input id="b_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote équipe 1</label><input id="b_s1" inputmode="decimal" type="number" step=".01"></div>
@@ -134,16 +143,16 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Total points Pinnacle <span class="badge">agit sur les swings en cours de match</span></h2>
+    <h2>Total Pinnacle <span class="badge">agit sur les swings en cours de match</span></h2>
     <div class="grid3">
-      <div><label>Ligne totale</label><input id="b_t" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne du total</label><input id="b_t" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Over</label><input id="b_over" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Under</label><input id="b_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote bookmaker équipe 1 (optionnel)</label><input id="b_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote bookmaker équipe 2 (optionnel)</label><input id="b_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="b_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="b_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcBridgeSport('b',20,'BASKET',1.30)">CALCULER BASKET</button></div>
   <div class="card hidden" id="b_res"></div>
@@ -151,6 +160,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <!-- NFL -->
 <div id="nfl" class="panel">
+<div class="card">
+  <div class="note"><b>Convention de saisie :</b> Équipe 1 = équipe affichée en premier, Équipe 2 = équipe affichée en second. Pour le handicap, saisis la ligne du point de vue de l’Équipe 1 (ex. -4,5 si l’Équipe 1 est favorite ; +4,5 si elle est outsider). Pour le total, choisis la ligne la plus proche de 50/50 et saisis la cote Over puis la cote Under. Toutes les cotes ci-dessus sont Pinnacle ; le dernier bloc est uniquement la cote Winamax.</div>
+</div>
   <div class="card">
     <h2>Moneyline Pinnacle</h2>
     <div class="grid2">
@@ -159,8 +171,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Handicap / spread Pinnacle <span class="badge">ligne centrale</span></h2>
-    <div class="note">Vu depuis l'équipe 1 : favorite -8,5 → -8,5.</div><br>
+    <h2>Handicap Pinnacle <span class="badge">ligne centrale</span></h2>
+    
     <div class="grid3">
       <div><label>Handicap équipe 1</label><input id="n_h" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Cote équipe 1</label><input id="n_s1" inputmode="decimal" type="number" step=".01"></div>
@@ -168,16 +180,16 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Total points Pinnacle <span class="badge">agit sur les swings en cours de match</span></h2>
+    <h2>Total Pinnacle <span class="badge">agit sur les swings en cours de match</span></h2>
     <div class="grid3">
-      <div><label>Ligne totale</label><input id="n_t" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne du total</label><input id="n_t" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Over</label><input id="n_over" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Under</label><input id="n_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote bookmaker équipe 1 (optionnel)</label><input id="n_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote bookmaker équipe 2 (optionnel)</label><input id="n_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="n_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="n_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcBridgeSport('n',17,'FOOT US',4.63)">CALCULER FOOT US</button></div>
   <div class="card hidden" id="n_res"></div>
@@ -185,8 +197,21 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <!-- RUGBY -->
 <div id="rugby" class="panel">
+<div class="card">
+  <div class="note"><b>Convention de saisie :</b> Équipe 1 = équipe affichée en premier, Équipe 2 = équipe affichée en second. Pour le handicap, saisis la ligne du point de vue de l’Équipe 1 (ex. -4,5 si l’Équipe 1 est favorite ; +4,5 si elle est outsider). Pour le total, choisis la ligne la plus proche de 50/50 et saisis la cote Over puis la cote Under. Toutes les cotes ci-dessus sont Pinnacle ; le dernier bloc est uniquement la cote Winamax.</div>
+</div>
   <div class="card">
-    <h2>1X2 Pinnacle — Rugby à XV</h2>
+    <h2>Format de rugby</h2>
+    <div class="grid2">
+      <div><label>Discipline</label>
+        <select id="r_code">
+          <option value="XV">Rugby à XV</option>
+          <option value="XIII">Rugby à XIII</option>
+        </select>
+      </div>
+    </div>
+    <hr>
+    <h2>1X2 Pinnacle</h2>
     <div class="grid3">
       <div><label>1</label><input id="r_o1" inputmode="decimal" type="number" step=".01"></div>
       <div><label>X</label><input id="r_ox" inputmode="decimal" type="number" step=".01"></div>
@@ -202,17 +227,17 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     </div>
   </div>
   <div class="card">
-    <h2>Total points Pinnacle</h2>
+    <h2>Total Pinnacle</h2>
     <div class="grid3">
-      <div><label>Ligne totale</label><input id="r_t" inputmode="decimal" type="number" step=".5"></div>
+      <div><label>Ligne du total</label><input id="r_t" inputmode="decimal" type="number" step=".5"></div>
       <div><label>Over</label><input id="r_over" inputmode="decimal" type="number" step=".01"></div>
       <div><label>Under</label><input id="r_under" inputmode="decimal" type="number" step=".01"></div>
     </div>
     <div class="note">Le rugby est le modèle le moins calibré des sports d'équipe du calculateur : le total est utilisé pour la volatilité intra-match, avec une hypothèse volontairement prudente.</div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote bookmaker équipe 1 (optionnel)</label><input id="r_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote bookmaker équipe 2 (optionnel)</label><input id="r_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 1 (optionnel)</label><input id="r_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax équipe 2 (optionnel)</label><input id="r_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcRugby()">CALCULER RUGBY</button></div>
   <div class="card hidden" id="r_res"></div>
@@ -220,6 +245,9 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
 
 <!-- TENNIS -->
 <div id="tennis" class="panel">
+<div class="card">
+  <div class="note"><b>Convention de saisie :</b> Joueur 1 = joueur affiché en premier, Joueur 2 = joueur affiché en second. Saisis les deux moneylines Pinnacle. Le dernier bloc est uniquement la cote Winamax.</div>
+</div>
   <div class="card">
     <h2>Moneyline Pinnacle — simple ATP/WTA</h2>
     <div class="grid2">
@@ -240,8 +268,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}th,td{pa
     <div class="note">Le tennis ne peut pas être estimé aussi précisément sans information médicale propre aux joueurs. Le calcul utilise donc une base historique ATP/WTA et affiche une <b>fourchette</b>, pas une fausse précision.</div>
   </div>
   <div class="card"><div class="grid2">
-    <div><label>Cote bookmaker joueur 1 (optionnel)</label><input id="t_wa" inputmode="decimal" type="number" step=".01"></div>
-    <div><label>Cote bookmaker joueur 2 (optionnel)</label><input id="t_wb" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax joueur 1 (optionnel)</label><input id="t_wa" inputmode="decimal" type="number" step=".01"></div>
+    <div><label>Cote Winamax joueur 2 (optionnel)</label><input id="t_wb" inputmode="decimal" type="number" step=".01"></div>
   </div></div>
   <div class="card"><button class="calc" onclick="calcTennis()">CALCULER TENNIS</button></div>
   <div class="card hidden" id="t_res"></div>
@@ -339,7 +367,7 @@ function calibrateDiff(pWin,h,pCover){
  return{mu:zw*sigma,sigma:sigma}
 }
 /* Conditional bridge model:
-   final margin ~ N(mu,sigma^2) from ML + spread.
+   final margin ~ N(mu,sigma^2) from ML + handicap.
    eta controls intra-game path roughness and is scaled by game total.
    closed form P(hit +a and finish <=0). */
 function bridgeBonus(mu,sigma,eta,a){
@@ -365,9 +393,14 @@ function calcBridgeSport(prefix,threshold,label,F){
  var details='<div class="note">'+label+' : marge finale implicite équipe 1 = '+cal.mu.toFixed(2)+' pts · σ finale = '+cal.sigma.toFixed(2)+' · volatilité de trajectoire η = '+eta.toFixed(2)+' (dépend du total '+tot.toFixed(1)+'). '+calText+'</div>'+centralityWarn(ov,un)+sigmaWarn;
  el.innerHTML=resultTable(p[0],p[1],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
-function rugbySeverity(){return [{pts:3,p:.31},{pts:5,p:.15},{pts:7,p:.54}]}
-function rugbyScorePMF(lambda,max){
- var sev=rugbySeverity(),p=new Array(max+1).fill(0);p[0]=Math.exp(-lambda);
+function rugbySeverity(code){
+ if(code==="XIII"){
+  return [{pts:1,p:.010},{pts:2,p:.083},{pts:4,p:.195},{pts:6,p:.712}]
+ }
+ return [{pts:3,p:.335},{pts:5,p:.185},{pts:7,p:.480}]
+}
+function rugbyScorePMF(lambda,max,code){
+ var sev=rugbySeverity(code),p=new Array(max+1).fill(0);p[0]=Math.exp(-lambda);
  for(var k=1;k<=max;k++){
   var z=0;
   for(var j=0;j<sev.length;j++){var d=sev[j].pts;if(d<=k)z+=d*sev[j].p*p[k-d]}
@@ -375,44 +408,44 @@ function rugbyScorePMF(lambda,max){
  }
  return p
 }
-function rugbyTotalProb(lambda,line,max){
- var p=rugbyScorePMF(lambda,max),subs=splitQuarter(line),ws=0,ls=0;
- for(var s=0;s<subs.length;s++){var h=subs[s],w=0,l=0;for(var i=0;i<=max;i++){var z=i-h;if(z>1e-9)w+=p[i];else if(z<-1e-9)l+=p[i]}ws+=w;ls+=l}
+function rugbyTotalProb(lambda,line,max,code){
+ var p=rugbyScorePMF(lambda,max,code),subs=splitQuarter(line),ws=0,ls=0;
+ for(var ss=0;ss<subs.length;ss++){var hh=subs[ss],w=0,l=0;for(var i=0;i<=max;i++){var z=i-hh;if(z>1e-9)w+=p[i];else if(z<-1e-9)l+=p[i]}ws+=w;ls+=l}
  return ws/(ws+ls)
 }
-function solveRugbyTotal(line,q,max){
- var lo=.05,hi=30;
- for(var i=0;i<70;i++){var m=(lo+hi)/2;if(rugbyTotalProb(m,line,max)<q)lo=m;else hi=m}
+function solveRugbyTotal(line,q,max,code){
+ var lo=.05,hi=35;
+ for(var i=0;i<70;i++){var m=(lo+hi)/2;if(rugbyTotalProb(m,line,max,code)<q)lo=m;else hi=m}
  return (lo+hi)/2
 }
-function rugbyMarketProbs(la,lb,h,max){
- var a=rugbyScorePMF(la,max),b=rugbyScorePMF(lb,max),subs=splitQuarter(h),p1=0,pd=0,p2=0,aw=0,al=0;
+function rugbyMarketProbs(la,lb,h,max,code){
+ var a=rugbyScorePMF(la,max,code),b=rugbyScorePMF(lb,max,code),subs=splitQuarter(h),p1=0,pd=0,p2=0,aw=0,al=0;
  for(var i=0;i<=max;i++)for(var j=0;j<=max;j++){
   var pr=a[i]*b[j];if(i>j)p1+=pr;else if(i<j)p2+=pr;else pd+=pr;
-  for(var u=0;u<subs.length;u++){var z=i-j+subs[u];if(z>1e-9)aw+=pr;else if(z<-1e-9)al+=pr}
+  for(var u=0;u<subs.length;u++){var zz=i-j+subs[u];if(zz>1e-9)aw+=pr;else if(zz<-1e-9)al+=pr}
  }
  var zsum=p1+pd+p2;return {p:[p1/zsum,pd/zsum,p2/zsum],ah:aw/(aw+al)}
 }
-function fitRugbyMarkets(p123,qAh,qTot,h,t,max){
- var totalLambda=solveRugbyTotal(t,qTot,max),best=null;
+function fitRugbyMarkets(p123,qAh,qTot,h,t,max,code){
+ var totalLambda=solveRugbyTotal(t,qTot,max,code),best=null;
  for(var share=.05;share<=.95;share+=.005){
-  var la=totalLambda*share,lb=totalLambda-la,z=rugbyMarketProbs(la,lb,h,max);
+  var la=totalLambda*share,lb=totalLambda-la,z=rugbyMarketProbs(la,lb,h,max,code);
   var loss=1.5*((z.p[0]-p123[0])**2+(z.p[1]-p123[1])**2+(z.p[2]-p123[2])**2)+3*(z.ah-qAh)**2;
   var maxerr=Math.max(Math.abs(z.p[0]-p123[0]),Math.abs(z.p[1]-p123[1]),Math.abs(z.p[2]-p123[2]),Math.abs(z.ah-qAh));
   if(!best||loss<best.loss)best={la:la,lb:lb,p:z.p,ah:z.ah,loss:loss,maxerr:maxerr,totalLambda:totalLambda}
  }
  var center=best.la/totalLambda,a=Math.max(.02,center-.012),b=Math.min(.98,center+.012);
  for(var sh=a;sh<=b;sh+=.001){
-  var la2=totalLambda*sh,lb2=totalLambda-la2,z2=rugbyMarketProbs(la2,lb2,h,max);
+  var la2=totalLambda*sh,lb2=totalLambda-la2,z2=rugbyMarketProbs(la2,lb2,h,max,code);
   var loss2=1.5*((z2.p[0]-p123[0])**2+(z2.p[1]-p123[1])**2+(z2.p[2]-p123[2])**2)+3*(z2.ah-qAh)**2;
   var me=Math.max(Math.abs(z2.p[0]-p123[0]),Math.abs(z2.p[1]-p123[1]),Math.abs(z2.p[2]-p123[2]),Math.abs(z2.ah-qAh));
   if(loss2<best.loss)best={la:la2,lb:lb2,p:z2.p,ah:z2.ah,loss:loss2,maxerr:me,totalLambda:totalLambda}
  }
  return best
 }
-function rugbySeqBonus(la,lb,threshold,side){
- var L=la+lb,pa=la/L,pb=lb/L,sev=rugbySeverity(),states=new Map([["0|0",1]]),pN=Math.exp(-L),ans=0;
- for(var n=0;n<=45;n++){
+function rugbySeqBonus(la,lb,threshold,side,code){
+ var L=la+lb,pa=la/L,pb=lb/L,sev=rugbySeverity(code),states=new Map([["0|0",1]]),pN=Math.exp(-L),ans=0;
+ for(var n=0;n<=50;n++){
   if(n>0){
    var nx=new Map();
    states.forEach(function(pr,key){
@@ -434,14 +467,17 @@ function rugbySeqBonus(la,lb,threshold,side){
 function calcRugby(){
  var o1=v('r_o1'),ox=v('r_ox'),o2=v('r_o2'),h=v('r_h'),s1=v('r_s1'),s2=v('r_s2'),tot=v('r_t'),ov=v('r_over'),un=v('r_under');
  if([o1,ox,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis 1/X/2, handicap et total.');return}
- var p=additive([o1,ox,o2]),qAh=additive([s1,s2])[0],qTot=additive([ov,un])[0],fit=fitRugbyMarkets(p,qAh,qTot,h,tot,120);
- var rA=rugbySeqBonus(fit.la,fit.lb,15,'A'),rB=rugbySeqBonus(fit.la,fit.lb,15,'B');
- var meanPts=.31*3+.15*5+.54*7;
+ var code=document.getElementById('r_code').value,p=additive([o1,ox,o2]),qAh=additive([s1,s2])[0],qTot=additive([ov,un])[0];
+ var fit=fitRugbyMarkets(p,qAh,qTot,h,tot,140,code),rA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),rB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
+ var sev=rugbySeverity(code),meanPts=sev.reduce(function(a,x){return a+x.pts*x.p},0);
  var status=fit.maxerr>.035?'<div class="bad">⚠ Marchés trop incohérents avec le modèle rugby (écart max '+(fit.maxerr*100).toFixed(1)+' pt). Ne te fie pas à cette fair.</div>':
             fit.maxerr>.02?'<div class="warn">⚠ Ajustement moyen : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>':
             '<div class="good">✓ Ajustement marchés correct : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>';
- var details='<div class="note">RUGBY XV : modèle de scores composé, avec événements de 3 / 5 / 7 points. Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Les intensités sont ajustées sur 1X2 + handicap + total, puis le calcul suit les chemins pouvant atteindre +15 avant de ne pas gagner.</div>'+status+
- '<div class="warn">⚠ Le mix 3/5/7 est une approximation générique du rugby pro moderne ; la précision peut varier selon compétition et style de jeu.</div>';
+ var detailCode=code==="XIII"
+  ?'RUGBY À XIII : événements de score modélisés en 1 / 2 / 4 / 6 points.'
+  :'RUGBY À XV : événements de score modélisés en 3 / 5 / 7 points.';
+ var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Les intensités sont ajustées sur 1X2 + handicap + total, puis le calcul suit les chemins pouvant atteindre +15 avant de ne pas gagner.</div>'+status+
+ '<div class="warn">⚠ Le profil d’événements est générique à chaque code de rugby ; la précision peut varier selon compétition et style de jeu.</div>';
  var el=document.getElementById('r_res');el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
 }
 function tennisRate(tour,surface){
