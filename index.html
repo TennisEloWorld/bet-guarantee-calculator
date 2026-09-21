@@ -299,17 +299,17 @@ function oneXTwo(la,lb,max){
  for(var i=0;i<=max;i++)for(var j=0;j<=max;j++){var pr=pa[i]*pb[j];if(i>j)a+=pr;else if(i<j)b+=pr;else d+=pr}
  var s=a+d+b;return[a/s,d/s,b/s]
 }
-function fitPoissonTargets(p123,qAh,qTot,h,t,max,limit){
+function fitPoissonPathTargets(qAh,qTot,h,t,max,limit){
  var best=null;
  function score(la,lb){
-  var p=oneXTwo(la,lb,max),qa=ahQ(la,lb,h,max),qt=totalQ(la+lb,t,max);
-  var loss=1.25*((p[0]-p123[0])*(p[0]-p123[0])+(p[1]-p123[1])*(p[1]-p123[1])+(p[2]-p123[2])*(p[2]-p123[2]))+3*(qa-qAh)*(qa-qAh)+3*(qt-qTot)*(qt-qTot);
-  var maxerr=Math.max(Math.abs(p[0]-p123[0]),Math.abs(p[1]-p123[1]),Math.abs(p[2]-p123[2]),Math.abs(qa-qAh),Math.abs(qt-qTot));
-  return{la:la,lb:lb,p:p,qa:qa,qt:qt,loss:loss,maxerr:maxerr}
+  var qa=ahQ(la,lb,h,max),qt=totalQ(la+lb,t,max);
+  var loss=4*(qa-qAh)*(qa-qAh)+4*(qt-qTot)*(qt-qTot);
+  var patherr=Math.max(Math.abs(qa-qAh),Math.abs(qt-qTot));
+  return{la:la,lb:lb,qa:qa,qt:qt,loss:loss,patherr:patherr}
  }
  for(var la=.05;la<=limit;la+=.05)for(var lb=.05;lb<=limit;lb+=.05){var z=score(la,lb);if(!best||z.loss<best.loss)best=z}
  var a0=Math.max(.02,best.la-.12),a1=Math.min(limit,best.la+.12),b0=Math.max(.02,best.lb-.12),b1=Math.min(limit,best.lb+.12);
- for(var la2=a0;la2<=a1;la2+=.01)for(var lb2=b0;lb2<=b1;lb2+=.01){var z2=score(la2,lb2);if(z2.loss<best.loss)best=z2}
+ for(var la2=a0;la2<=a1;la2+=.005)for(var lb2=b0;lb2<=b1;lb2+=.005){var z2=score(la2,lb2);if(z2.loss<best.loss)best=z2}
  return best
 }
 function seqBonus(la,lb,threshold,side){
@@ -335,11 +335,16 @@ function calcGoalSport(prefix,threshold,label){
  var o1=v(prefix+'_o1'),ox=v(prefix+'_ox'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),h1=v(prefix+'_h1'),h2=v(prefix+'_h2'),t=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
  if([o1,ox,o2,h,h1,h2,t,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||h1<=1||h2<=1||ov<=1||un<=1){alert('Remplis 1/X/2, handicap et total.');return}
  var p123=additive([o1,ox,o2]),qAh=additive([h1,h2])[0],qTot=additive([ov,un])[0],max=label==='HOCKEY'?15:12,limit=label==='HOCKEY'?5.5:4.5;
- var fit=fitPoissonTargets(p123,qAh,qTot,h,t,max,limit),rA=seqBonus(fit.la,fit.lb,threshold,'A'),rB=seqBonus(fit.la,fit.lb,threshold,'B');
- var status=fit.maxerr>.03?'<div class="bad">⚠ Marchés trop incohérents avec le modèle (écart max '+(fit.maxerr*100).toFixed(1)+' pt). Ne te fie pas à cette fair.</div>':
-            fit.maxerr>.018?'<div class="warn">⚠ Ajustement moyen : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>':
-            '<div class="good">✓ Ajustement marchés correct : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>';
- var details='<div class="note">λ équipe 1 = '+fit.la.toFixed(2)+' · λ équipe 2 = '+fit.lb.toFixed(2)+' · ajustement conjoint 1X2 + handicap + total.</div>'+status;
+ var fit=fitPoissonPathTargets(qAh,qTot,h,t,max,limit),rA=seqBonus(fit.la,fit.lb,threshold,'A'),rB=seqBonus(fit.la,fit.lb,threshold,'B');
+ var pModel=oneXTwo(fit.la,fit.lb,max);
+ var cross=Math.max(Math.abs(pModel[0]-p123[0]),Math.abs(pModel[1]-p123[1]),Math.abs(pModel[2]-p123[2]));
+ var status=fit.patherr>.015
+   ?'<div class="bad">⚠ Handicap et total difficiles à reproduire ensemble (écart max '+(fit.patherr*100).toFixed(1)+' pt). Vérifie les lignes saisies.</div>'
+   :'<div class="good">✓ Handicap et total correctement reproduits par le modèle.</div>';
+ var crossNote=cross>.025
+   ?'<div class="note">ℹ️ Le 1X2 s’écarte de '+(cross*100).toFixed(1)+' pt du Poisson simple. Ce n’est pas une erreur de saisie : la fair classique reste calculée directement depuis le 1X2, tandis que le bonus de garantie utilise le handicap + total.</div>'
+   :'';
+ var details='<div class="note">λ équipe 1 = '+fit.la.toFixed(2)+' · λ équipe 2 = '+fit.lb.toFixed(2)+' · bonus calibré sur handicap + total.</div>'+status+crossNote;
  var el=document.getElementById(prefix+'_res');el.innerHTML=resultTable(p123[0],p123[2],rA,rB,v(prefix+'_wa'),v(prefix+'_wb'),details);el.classList.remove('hidden')
 }
 function calibrateDiff(pWin,h,pCover){
@@ -408,20 +413,19 @@ function rugbyMarketProbs(la,lb,h,max,code){
  }
  var zsum=p1+pd+p2;return {p:[p1/zsum,pd/zsum,p2/zsum],ah:aw/(aw+al)}
 }
-function fitRugbyMarkets(p123,qAh,qTot,h,t,max,code){
+function fitRugbyPath(qAh,qTot,h,t,max,code){
  var totalLambda=solveRugbyTotal(t,qTot,max,code),best=null;
  for(var share=.05;share<=.95;share+=.005){
   var la=totalLambda*share,lb=totalLambda-la,z=rugbyMarketProbs(la,lb,h,max,code);
-  var loss=1.5*((z.p[0]-p123[0])**2+(z.p[1]-p123[1])**2+(z.p[2]-p123[2])**2)+3*(z.ah-qAh)**2;
-  var maxerr=Math.max(Math.abs(z.p[0]-p123[0]),Math.abs(z.p[1]-p123[1]),Math.abs(z.p[2]-p123[2]),Math.abs(z.ah-qAh));
-  if(!best||loss<best.loss)best={la:la,lb:lb,p:z.p,ah:z.ah,loss:loss,maxerr:maxerr,totalLambda:totalLambda}
+  var loss=(z.ah-qAh)*(z.ah-qAh);
+  var aherr=Math.abs(z.ah-qAh);
+  if(!best||loss<best.loss)best={la:la,lb:lb,p:z.p,ah:z.ah,loss:loss,aherr:aherr,totalLambda:totalLambda}
  }
  var center=best.la/totalLambda,a=Math.max(.02,center-.012),b=Math.min(.98,center+.012);
  for(var sh=a;sh<=b;sh+=.001){
   var la2=totalLambda*sh,lb2=totalLambda-la2,z2=rugbyMarketProbs(la2,lb2,h,max,code);
-  var loss2=1.5*((z2.p[0]-p123[0])**2+(z2.p[1]-p123[1])**2+(z2.p[2]-p123[2])**2)+3*(z2.ah-qAh)**2;
-  var me=Math.max(Math.abs(z2.p[0]-p123[0]),Math.abs(z2.p[1]-p123[1]),Math.abs(z2.p[2]-p123[2]),Math.abs(z2.ah-qAh));
-  if(loss2<best.loss)best={la:la2,lb:lb2,p:z2.p,ah:z2.ah,loss:loss2,maxerr:me,totalLambda:totalLambda}
+  var loss2=(z2.ah-qAh)*(z2.ah-qAh),e2=Math.abs(z2.ah-qAh);
+  if(loss2<best.loss)best={la:la2,lb:lb2,p:z2.p,ah:z2.ah,loss:loss2,aherr:e2,totalLambda:totalLambda}
  }
  return best
 }
@@ -450,15 +454,19 @@ function calcRugby(){
  var o1=v('r_o1'),ox=v('r_ox'),o2=v('r_o2'),h=v('r_h'),s1=v('r_s1'),s2=v('r_s2'),tot=v('r_t'),ov=v('r_over'),un=v('r_under');
  if([o1,ox,o2,h,s1,s2,tot,ov,un].some(function(z){return z===null})||o1<=1||ox<=1||o2<=1||s1<=1||s2<=1||ov<=1||un<=1||tot<=0){alert('Remplis 1/X/2, handicap et total.');return}
  var code=document.getElementById('r_code').value,p=additive([o1,ox,o2]),qAh=additive([s1,s2])[0],qTot=additive([ov,un])[0];
- var fit=fitRugbyMarkets(p,qAh,qTot,h,tot,140,code),rA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),rB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
+ var fit=fitRugbyPath(qAh,qTot,h,tot,140,code),rA=rugbySeqBonus(fit.la,fit.lb,15,'A',code),rB=rugbySeqBonus(fit.la,fit.lb,15,'B',code);
  var sev=rugbySeverity(code),meanPts=sev.reduce(function(a,x){return a+x.pts*x.p},0);
- var status=fit.maxerr>.035?'<div class="bad">⚠ Marchés trop incohérents avec le modèle rugby (écart max '+(fit.maxerr*100).toFixed(1)+' pt). Ne te fie pas à cette fair.</div>':
-            fit.maxerr>.02?'<div class="warn">⚠ Ajustement moyen : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>':
-            '<div class="good">✓ Ajustement marchés correct : écart max '+(fit.maxerr*100).toFixed(1)+' pt.</div>';
+ var cross=Math.max(Math.abs(fit.p[0]-p[0]),Math.abs(fit.p[1]-p[1]),Math.abs(fit.p[2]-p[2]));
+ var status=fit.aherr>.015
+   ?'<div class="bad">⚠ Handicap difficile à reproduire avec le total saisi (écart '+(fit.aherr*100).toFixed(1)+' pt). Vérifie les lignes.</div>'
+   :'<div class="good">✓ Handicap et total correctement reproduits par le modèle.</div>';
+ var crossNote=cross>.03
+   ?'<div class="note">ℹ️ Le 1X2 s’écarte de '+(cross*100).toFixed(1)+' pt du modèle de scoring générique. La fair classique reste calculée directement depuis le 1X2 ; le bonus +15 utilise handicap + total.</div>'
+   :'';
  var detailCode=code==="XIII"
   ?'RUGBY À XIII : événements de score modélisés en 1 / 2 / 4 / 6 points.'
   :'RUGBY À XV : événements de score modélisés en 3 / 5 / 7 points.';
- var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Les intensités sont ajustées sur 1X2 + handicap + total, puis le calcul suit les chemins pouvant atteindre +15 avant de ne pas gagner.</div>'+status+
+ var details='<div class="note">'+detailCode+' Taux d’événements implicite équipe 1 = '+fit.la.toFixed(2)+' · équipe 2 = '+fit.lb.toFixed(2)+' ; valeur moyenne d’un événement ≈ '+meanPts.toFixed(2)+' pts. Le bonus +15 est calibré sur handicap + total.</div>'+status+crossNote+
  '<div class="warn">⚠ Le profil d’événements est générique à chaque code de rugby ; la précision peut varier selon compétition et style de jeu.</div>';
  var el=document.getElementById('r_res');el.innerHTML=resultTable(p[0],p[2],rA,rB,v('r_wa'),v('r_wb'),details);el.classList.remove('hidden')
 }
