@@ -409,13 +409,17 @@ function seqBonus(la,lb,threshold,side){
  }
  return ans
 }
+function evClass(ev){
+ if(ev===null)return '';
+ return ev<0?'bad':'good'
+}
 function resultTable(pA,pB,rA,rB,wA,wB,extra){
  var ppA=clamp(pA+rA,1e-9,.999999),ppB=clamp(pB+rB,1e-9,.999999),evA=wA?wA*ppA-1:null,evB=wB?wB*ppB-1:null;
  return '<table><tr><th></th><th>Équipe 1</th><th>Équipe 2</th></tr>'+
  '<tr><td>Fair classique</td><td>'+fmt(1/pA)+'</td><td>'+fmt(1/pB)+'</td></tr>'+
  '<tr><td>Bonus garantie</td><td>+'+(rA*100).toFixed(2)+' pt</td><td>+'+(rB*100).toFixed(2)+' pt</td></tr>'+
  '<tr><td><b>FAIR GARANTIE</b></td><td class="big">'+fmt(1/ppA)+'</td><td class="big">'+fmt(1/ppB)+'</td></tr>'+
- '<tr><td>EV à la cote saisie</td><td class="good">'+(evA===null?'—':pct(evA))+'</td><td class="good">'+(evB===null?'—':pct(evB))+'</td></tr></table>'+extra
+ '<tr><td>EV à la cote saisie</td><td class="'+evClass(evA)+'">'+(evA===null?'—':pct(evA))+'</td><td class="'+evClass(evB)+'">'+(evB===null?'—':pct(evB))+'</td></tr></table>'+extra
 }
 function calcGoalSport(prefix,threshold,label){
  var o1=v(prefix+'_o1'),ox=v(prefix+'_ox'),o2=v(prefix+'_o2'),h=v(prefix+'_h'),h1=v(prefix+'_h1'),h2=v(prefix+'_h2'),t=v(prefix+'_t'),ov=v(prefix+'_over'),un=v(prefix+'_under');
